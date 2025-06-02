@@ -1,0 +1,14 @@
+/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+
+.export-compat * {
+  color: black !important;
+  background-color: white !important;
+  box-shadow: none !important;
+}
+
+.export-clean * {
+  color: black !important;
+  background-color: white !important;
+  box-shadow: none !important;
+}

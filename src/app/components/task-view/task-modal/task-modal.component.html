@@ -1,0 +1,173 @@
+<!-- Modal Overlay -->
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+>
+  <!-- Modal Box -->
+  <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold">
+        {{ task()._id == 0 ? "NEW TASK" : "UPDATE TASK" }}
+      </h2>
+      <button
+        class="text-gray-50 bg-gray-600 w-8 h-8 rounded-[50%] hover:scale-105 cursor-pointer"
+        (click)="closeModal()"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Content -->
+    <form [formGroup]="taskForm" (ngSubmit)="submit()" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Date</label>
+        <input
+          type="date"
+          formControlName="date"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Start Time</label
+          >
+          <input
+            type="time"
+            formControlName="start_time"
+            class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >End Time</label
+          >
+          <input
+            type="time"
+            formControlName="end_time"
+            class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Pay Type</label>
+        <select
+          formControlName="pay_type"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        >
+          <option value="WORK">Work</option>
+          <option value="LUNCH">Lunch</option>
+          <option value="VACATION">Vacation</option>
+        </select>
+      </div>
+
+      <div *ngIf="taskForm.value.pay_type === 'WORK'">
+        <label class="block text-sm font-medium text-gray-700">Project</label>
+        <select
+          formControlName="job"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        >
+          <option *ngFor="let job of jobs()" [ngValue]="job._id">
+            {{ job.name }}
+          </option>
+        </select>
+      </div>
+
+      <div *ngIf="taskForm.value.pay_type === 'WORK'">
+        <label class="block text-sm font-medium text-gray-700">Item #</label>
+        <select
+          formControlName="item"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        >
+          <option *ngFor="let item of items()" [ngValue]="item">
+            {{ item }}
+          </option>
+        </select>
+      </div>
+
+      <div *ngIf="taskForm.value.pay_type === 'WORK'">
+        <label class="block text-sm font-medium text-gray-700"
+          >Cost Center</label
+        >
+        <select
+          formControlName="cost_center"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        >
+          <option *ngFor="let cc of costCenters()" [ngValue]="cc._id">
+            {{ cc.code }} | {{ cc.location }}
+          </option>
+        </select>
+      </div>
+
+      <div *ngIf="loginService.user()?.isAdmin">
+        <label class="block text-sm font-medium text-gray-700">User</label>
+        <select
+          formControlName="user"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        >
+          <option *ngFor="let user of users()" [ngValue]="user._id">
+            {{ user.first_name }}
+          </option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Notes</label>
+        <textarea
+          formControlName="notes"
+          rows="2"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        ></textarea>
+      </div>
+
+      <div *ngIf="loginService.user()?.isAdmin">
+        <label class="block text-sm font-medium text-gray-700" for="stat"
+          >Status</label
+        >
+        <select
+          formControlName="status"
+          id="stat"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        >
+          <option value="approved">Approved</option>
+          <option value="denied">Denied</option>
+          <option value="pending">Pending</option>
+        </select>
+      </div>
+      <!-- Buttons -->
+      <div class="flex justify-between pt-4">
+        <button
+          type="button"
+          (click)="delete(task()._id)"
+          [disabled]="task()._id == 0"
+          class="px-4 py-2 text-sm text-gray-50 bg-red-800 rounded hover:bg-red-700 cursor-pointer"
+          *ngIf="
+            task()._id > 0 && (loginService.user()!.isAdmin || task().pending)
+          "
+        >
+          Delete
+        </button>
+        <div class="flex flex-1 justify-end space-x-3">
+          <button
+            type="button"
+            (click)="cancel()"
+            class="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200 cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-700 cursor-pointer"
+            *ngIf="
+              task()._id == 0 || task().pending || loginService.user()?.isAdmin
+            "
+          >
+            {{ task()._id > 0 ? "Update" : "Add" }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

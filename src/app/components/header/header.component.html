@@ -1,0 +1,28 @@
+<nav class="bg-red-950 text-gray-200 h-20">
+  <div class="container h-full mx-auto flex justify-between items-center">
+    <ul class="flex gap-2">
+      <!-- <li>
+        <a routerLink="dashboard" routerLinkActive="router-link-active">
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a routerLink="login">Login</a>
+      </li> -->
+      <!-- <button (click)="logout()">Logout</button> -->
+    </ul>
+    <!-- <button
+      class="bg-gray-300 h-10 w-10 text-gray-600 font-bold cursor-pointer rounded-[50%] hover:bg-gray-200 transition-normal"
+    >
+      {{ loginService.user()?.initial }}
+    </button> -->
+    <button
+      class="hover:underline hover:text-gray-300 cursor-pointer"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>

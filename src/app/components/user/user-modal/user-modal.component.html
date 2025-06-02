@@ -1,0 +1,255 @@
+<div
+  class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-center items-center"
+>
+  <div class="rounded-2xl bg-white shadow-lg w-md p-6">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold">
+        {{ user()._id == 0 ? "NEW USER" : "UPDATE USER" }}
+      </h2>
+      <button
+        class="text-gray-50 bg-gray-600 w-8 h-8 rounded-[50%] hover:scale-105 cursor-pointer"
+        (click)="closeModal()"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Modal Content -->
+    <form [formGroup]="userForm" (ngSubmit)="submit()" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="first_name"
+          >Firstname</label
+        >
+        <input
+          type="text"
+          id="first_name"
+          formControlName="first_name"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="last_name"
+          >Last Name</label
+        >
+        <input
+          type="text"
+          id="last_name"
+          formControlName="last_name"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="username"
+          >Username</label
+        >
+        <input
+          type="text"
+          id="username"
+          formControlName="username"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1"
+        />
+      </div>
+
+      <!-- <div>
+        <label class="block text-sm font-medium text-gray-700">Password</label>
+        <input
+          type="password"
+          id="secret"
+          formControlName="password1"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm p-2"
+        />
+      </div> -->
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="password"
+          >Password</label
+        >
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="role"
+          >Role</label
+        >
+        <select
+          formControlName="role"
+          id="role"
+          class="w-full ring-1 rounded px-2 py-1"
+        >
+          <option value="ADMIN">Admin</option>
+          <option value="EMPLOYEE">User</option>
+        </select>
+      </div>
+
+      <!-- Buttons -->
+      <div class="flex justify-between pt-4">
+        <button
+          type="button"
+          (click)="delete(user()._id)"
+          [disabled]="user()._id == 0"
+          class="px-4 py-2 text-sm text-gray-50 bg-red-800 rounded hover:bg-red-700 mr-2 cursor-pointer"
+          *ngIf="user()._id > 0 && loginService.user()!.isAdmin"
+        >
+          Delete
+        </button>
+        <button
+          type="button"
+          (click)="resetPassword(user()._id)"
+          class="px-4 py-2 text-sm text-white bg-yellow-500 rounded hover:bg-yellow-400 cursor-pointer"
+        >
+          Reset Password
+        </button>
+        <div class="flex flex-1 justify-end space-x-3">
+          <button
+            type="button"
+            (click)="cancel()"
+            class="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200 cursor-pointer"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-700 cursor-pointer"
+            *ngIf="user()._id == 0 || loginService.user()?.isAdmin"
+          >
+            {{ user()._id > 0 ? "Update" : "Add" }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Start Time</label
+          >
+          <input
+            type="time"
+            formControlName="start_time"
+            class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >End Time</label
+          >
+          <input
+            type="time"
+            formControlName="end_time"
+            class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Pay Type</label>
+        <select
+          formControlName="pay_type"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        >
+          <option value="WORK">Work</option>
+          <option value="LUNCH">Lunch</option>
+          <option value="VACATION">Vacation</option>
+        </select>
+      </div> -->
+
+<!-- <div *ngIf="taskForm.value.pay_type === 'WORK'">
+        <label class="block text-sm font-medium text-gray-700">Project</label>
+        <select
+          formControlName="job"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        >
+          <option *ngFor="let job of jobs()" [ngValue]="job._id">
+            {{ job.name }}
+          </option>
+        </select>
+      </div>
+      <div *ngIf="loginService.user()?.isAdmin">
+        <label class="block text-sm font-medium text-gray-700">User</label>
+        <select
+          formControlName="user"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        >
+          <option *ngFor="let user of users()" [ngValue]="user._id">
+            {{ user.first_name }}
+          </option>
+        </select>
+      </div>
+
+      <div *ngIf="taskForm.value.pay_type === 'WORK'">
+        <label class="block text-sm font-medium text-gray-700"
+          >Cost Center</label
+        >
+        <input
+          type="text"
+          formControlName="code"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Notes</label>
+        <textarea
+          formControlName="notes"
+          rows="2"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        ></textarea>
+      </div>
+
+      <div *ngIf="loginService.user()?.isAdmin">
+        <label class="block text-sm font-medium text-gray-700" for="stat"
+          >Status</label
+        >
+        <select
+          formControlName="status"
+          id="stat"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+        >
+          <option value="approved">Approved</option>
+          <option value="denied">Denied</option>
+          <option value="pending">Pending</option>
+        </select>
+      </div> -->
+<!-- Buttons -->
+<!-- <div class="flex justify-between pt-4">
+        <button
+          type="button"
+          (click)="delete(task()._id)"
+          [disabled]="task()._id == 0"
+          class="px-4 py-2 text-sm text-gray-50 bg-red-800 rounded hover:bg-red-700 cursor-pointer"
+          *ngIf="
+            task()._id > 0 && (loginService.user()!.isAdmin || task().pending)
+          "
+        >
+          Delete
+        </button>
+        <div class="flex flex-1 justify-end space-x-3">
+          <button
+            type="button"
+            (click)="cancel()"
+            class="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200 cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-700 cursor-pointer"
+            *ngIf="
+              task()._id == 0 || task().pending || loginService.user()?.isAdmin
+            "
+          >
+            {{ task()._id > 0 ? "Update" : "Add" }}
+          </button>
+        </div>
+      </div> -->

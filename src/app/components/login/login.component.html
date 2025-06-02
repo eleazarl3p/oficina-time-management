@@ -1,0 +1,53 @@
+<div
+  class="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-red-100 p-6"
+>
+  <div class="bg-white shadow-xl rounded-2xl max-w-md w-full p-8 space-y-6">
+    <!-- Title -->
+    <div class="text-center">
+      <h1 class="text-3xl font-bold text-red-900">Office Time Management</h1>
+      <p class="text-sm text-gray-500 mt-2">
+        <!-- Welcome back. Please login to continue. -->
+      </p>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="space-y-4">
+      <!-- Username -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Username</label>
+        <input
+          type="text"
+          formControlName="username"
+          class="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-red-400 focus:outline-none"
+          placeholder="Enter your username"
+        />
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Password</label>
+        <input
+          type="password"
+          formControlName="password"
+          class="mt-1 w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-red-400 focus:outline-none"
+          placeholder="••••••••"
+        />
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        class="w-full py-2 px-4 text-white cursor-pointer bg-red-900 hover:bg-red-700 rounded-lg font-semibold transition"
+      >
+        Log In
+      </button>
+    </form>
+    <span class="block text-red-600 text-center text-sm font-light">
+      {{ invalidCredentials ? "Invalid Credentials" : " " }}
+    </span>
+    <!-- Footer -->
+    <p class="text-xs text-center text-gray-400">
+      <!-- © 2025 Office Time Management. All rights reserved. -->
+    </p>
+  </div>
+</div>

@@ -1,0 +1,123 @@
+<aside class="flex flex-col shadow rounded transition-all duration-300">
+  <div
+    class="flex justify-between items-center px-4 py-6 bg-gray-900 text-gray-300"
+  >
+    <h2
+      class="text-xl font-semibold whitespace-nowrap overflow-hidden transition-opacity duration-300"
+      [ngClass]="{
+        'opacity-100': expanded,
+        'opacity-0': !expanded,
+        'w-0': !expanded
+      }"
+    >
+      {{ user().fullName }}
+    </h2>
+
+    <!-- <button
+      (click)="toggleSidebar()"
+      class="cursor-pointer w-10 h-10 flex items-center justify-center bg-amber-600 rounded-full"
+    >
+      
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 text-white"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+      </svg>
+    </button> -->
+  </div>
+
+  <ul class="flex flex-col">
+    <li class="h-10 flex">
+      <a
+        routerLink="/dashboard/tasks"
+        routerLinkActive
+        #taskLink="routerLinkActive"
+        class="whitespace-nowrap transition-opacity duration-300 flex items-center gap-1 w-full px-3 bg-gray-200 hover:bg-gray-300"
+        [ngClass]="{
+          'opacity-100': expanded,
+          'opacity-0': !expanded,
+          'bg-gray-300': taskLink.isActive
+        }"
+      >
+        <img src="/hammer-outline.svg" alt="task" class="w-4" />
+        Tasks</a
+      >
+    </li>
+    @if(user().isAdmin) {
+    <li class="h-10 flex">
+      <a
+        routerLink="/dashboard/users"
+        routerLinkActive
+        #homeLink="routerLinkActive"
+        class="whitespace-nowrap transition-opacity duration-300 flex items-center gap-1 w-full px-3 bg-gray-200 hover:bg-gray-300"
+        [ngClass]="{
+          'opacity-100': expanded,
+          'opacity-0': !expanded,
+          'bg-gray-300': homeLink.isActive
+        }"
+      >
+        <img src="/person-circle-outline.svg" alt="Users" class="w-4" />
+        Users</a
+      >
+    </li>
+    <li class="h-10 flex">
+      <a
+        routerLink="/dashboard/jobs"
+        routerLinkActive
+        #jobLink="routerLinkActive"
+        class="whitespace-nowrap transition-opacity duration-300 flex items-center gap-1 w-full px-3 bg-gray-200 hover:bg-gray-300"
+        [ngClass]="{
+          'opacity-100': expanded,
+          'opacity-0': !expanded,
+          'bg-gray-300': jobLink.isActive
+        }"
+      >
+        <img src="/library-outline.svg" alt="Job" class="w-4" />
+        Jobs</a
+      >
+    </li>
+    <li class="h-10 flex">
+      <a
+        routerLink="/dashboard/cost-center"
+        routerLinkActive
+        #ccLink="routerLinkActive"
+        class="whitespace-nowrap transition-opacity duration-300 flex items-center gap-1 w-full px-3 bg-gray-200 hover:bg-gray-300"
+        [ngClass]="{
+          'opacity-100': expanded,
+          'opacity-0': !expanded,
+          'bg-gray-300': ccLink.isActive
+        }"
+      >
+        <img src="/library-outline.svg" alt="Job" class="w-4" />
+        Cost Center</a
+      >
+    </li>
+    }
+    <li class="h-10 flex">
+      <a
+        routerLink="/dashboard/settings"
+        routerLinkActive
+        #settingsLink="routerLinkActive"
+        class="whitespace-nowrap transition-opacity duration-300 flex items-center gap-1 w-full px-3 bg-gray-200 hover:bg-gray-300"
+        [ngClass]="{
+          'opacity-100': expanded,
+          'opacity-0': !expanded,
+          'bg-gray-300': settingsLink.isActive
+        }"
+      >
+        <img src="/cog-outline.svg" alt="settings" class="w-4" />
+        Settings</a
+      >
+    </li>
+  </ul>
+</aside>
+<!-- <router-outlet></router-outlet> -->

@@ -1,0 +1,25 @@
+<div>
+  <table
+    class="w-full text-sm text-gray-800 mt-6 border border-gray-300 rounded-md shadow-md"
+  >
+    <thead class="bg-gray-300 text-black">
+      <tr>
+        <th class="px-3 py-2">FullName</th>
+        <th class="px-3 py-2">Role</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (user of users(); track user._id) {
+      <tr
+        class="odd:bg-white even:bg-gray-100 hover:bg-gray-50 cursor-pointer"
+        (click)="editUser.emit(user)"
+      >
+        <td class="text-center px-3 py-2 border-r-1 border-gray-300">
+          {{ user.fullName }}
+        </td>
+        <td class="px-3 py-2 text-center">{{ user.role }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

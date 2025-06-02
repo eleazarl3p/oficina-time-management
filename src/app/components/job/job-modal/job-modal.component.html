@@ -1,0 +1,106 @@
+<div
+  class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-center items-center"
+>
+  <div class="rounded-2xl bg-white shadow-lg w-md p-6">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold">
+        {{ job()._id == 0 ? "NEW JOB" : "UPDATE JOB" }}
+      </h2>
+      <button
+        class="text-gray-50 bg-gray-600 w-8 h-8 rounded-[50%] hover:scale-105 cursor-pointer"
+        (click)="closeModatEmitter.emit()"
+      >
+        ✕
+      </button>
+    </div>
+
+    <form [formGroup]="jobForm" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="jname"
+          >Name</label
+        >
+        <input
+          type="text"
+          id="jname"
+          placeholder="Job name"
+          formControlName="name"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700">Items</label>
+
+        <div class="flex flex-row flex-wrap space-x-2">
+          <span
+            *ngFor="let item of items()"
+            class="group bg-gray-200 text-center min-w-24 px-4 py-2 mb-2 rounded relative"
+          >
+            {{ item }}
+
+            <button
+              class="absolute -top-1 -right-1 w-5 h-5 bg-gray-400 text-white text-xs rounded-full flex items-center justify-center leading-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer"
+              (click)="removeItem(item)"
+              type="button"
+            >
+              ×
+            </button>
+          </span>
+        </div>
+      </div>
+    </form>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 mt-4 mb-1"
+        >New Item</label
+      >
+      <div class="flex gap-2">
+        <input
+          type="text"
+          class="ring-1 w-full px-2 py-1 rounded placeholder-gray-300 placeholder:font-thin"
+          name="itemn"
+          placeholder="Item name"
+          [(ngModel)]="newItem"
+        />
+        <button
+          class="px-3 py-1 rounded text-amber-50 bg-green-600 hover:bg-green-500 cursor-pointer active:scale-95"
+          (click)="addItem()"
+        >
+          Add
+        </button>
+      </div>
+    </div>
+    <hr class="my-4 border-gray-200" />
+    <!-- Buttons -->
+    <div class="flex justify-between pt-4">
+      <button
+        type="button"
+        (click)="delete(job()._id)"
+        [disabled]="job()._id == 0"
+        class="px-4 py-2 text-sm text-gray-50 bg-red-800 rounded hover:bg-red-700 mr-2 cursor-pointer"
+        *ngIf="job()._id > 0"
+      >
+        Delete
+      </button>
+
+      <div class="flex flex-1 justify-end space-x-3">
+        <button
+          type="button"
+          (click)="cancel()"
+          class="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200 cursor-pointer"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-500 cursor-pointer active:scale-95"
+          (click)="onSubmit()"
+        >
+          {{ job()._id > 0 ? "Update" : "Add" }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

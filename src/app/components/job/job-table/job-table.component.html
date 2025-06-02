@@ -1,0 +1,25 @@
+<div>
+  <table
+    class="w-full text-sm text-gray-800 mt-6 border border-gray-300 rounded-md shadow-md"
+  >
+    <thead class="bg-gray-300 text-black">
+      <tr>
+        <th class="px-3 py-2">Name</th>
+        <th class="px-3 py-2">Items</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (job of jobs(); track job._id) {
+      <tr
+        class="odd:bg-white even:bg-gray-100 hover:bg-gray-50 cursor-pointer"
+        (click)="editJobEvent.emit(job)"
+      >
+        <td class="px-3 py-2 text-center border-r-1 border-gray-200">
+          {{ job.name }}
+        </td>
+        <td class="px-3 py-2 text-center">{{ job.items }}</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

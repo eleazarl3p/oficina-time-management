@@ -1,0 +1,126 @@
+<div class="container mx-auto flex gap-4 px-4 md:px-0 h-[calc(100vh-5rem)]">
+  <app-side-panel
+    [user]="loginService.user()!"
+    class="items-stretch bg-white"
+  ></app-side-panel>
+  <div class="flex flex-col flex-1 items-center">
+    <h1 class="text-3xl font-bold mt-6">Settings</h1>
+
+    <div
+      class="bg-gray-50 rounded-xl mt-6 shadow px-8 py-6 text-gray-400 space-y-6"
+    >
+      <div class="flex gap-4 justify-between">
+        <div class="flex flex-col flex-1">
+          <label>First Name</label>
+          <p class="px-3 py-1 border-2 border-gray-300 rounded-lg">
+            {{ loginService.user()?.first_name }}
+          </p>
+        </div>
+
+        <div class="flex flex-col flex-1">
+          <label>Last Name</label>
+          <p class="px-3 py-1 border-2 border-gray-300 rounded-lg">
+            {{ loginService.user()?.last_name }}
+          </p>
+        </div>
+      </div>
+      <div class="flex gap-4">
+        <div class="flex flex-col flex-1">
+          <label>Username</label>
+          <p
+            class="px-3 py-1 items-stretch border-2 border-gray-300 rounded-lg"
+          >
+            {{ loginService.user()?.username }}
+          </p>
+        </div>
+      </div>
+      <form #form="ngForm">
+        <div class="flex gap-4">
+          <div class="flex flex-col flex-1">
+            <label>Password</label>
+            <input
+              type="text"
+              class="px-3 py-1 ring-0 border rounded-md"
+              placeholder="password"
+              [(ngModel)]="password1"
+              #pass1="ngModel"
+              name="password1"
+              required
+              minlength="8"
+              [ngClass]="{
+                'ring-2 ring-red-500 border-red-500':
+                  pass1.invalid && (pass1.touched || pass1.dirty),
+                'border-gray-300': !(
+                  pass1.invalid &&
+                  (pass1.touched || pass1.dirty)
+                )
+              }"
+            />
+            <div class="font-light text-sm text-red-500">
+              <span
+                *ngIf="pass1.errors?.['required'] && pass1.touched && pass1.dirty"
+                >Required</span
+              >
+              <span
+                *ngIf="pass1.errors?.['minlength'] && pass1.touched && pass1.dirty"
+                >Minimum characters: 8</span
+              >
+            </div>
+          </div>
+
+          <div class="flex flex-col flex-1">
+            <label>Confirm Password</label>
+            <input
+              type="text"
+              class="px-3 py-1 ring-0 border rounded-md"
+              placeholder="confirm password"
+              [(ngModel)]="password2"
+              name="password2"
+              #pass2="ngModel"
+              required
+              minlength="8"
+              [ngClass]="{
+                'ring-2 ring-red-500 border-red-500':
+                  pass2.invalid && (pass2.touched || pass2.dirty),
+                'border-gray-300': !(
+                  pass2.invalid &&
+                  (pass2.touched || pass2.dirty)
+                )
+              }"
+            />
+            <div class="font-light text-sm text-red-500">
+              <span
+                *ngIf="pass2.errors?.['required'] && pass2.touched && pass2.dirty"
+                >Required</span
+              >
+              <span
+                *ngIf="pass2.errors?.['minlength'] && pass2.touched && pass2.dirty"
+                >Minimum characters: 8</span
+              >
+              <span
+                *ngIf="!pass2.errors?.['minlength'] && !pass2.errors?.['required'] && password1() !== password2() && (pass2.touched && pass2.dirty || pass1.touched && pass1.dirty)"
+                >Password mismatch</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-end mt-4">
+          <button
+            type="submit"
+            class="px-4 py-2 text-white rounded-md"
+            [disabled]="form.invalid || password1 !== password2"
+            [ngClass]="{
+              'bg-gray-400 hover:bg-gray-400 cursor-auto':
+                form.invalid || password1 !== password2,
+              'bg-red-900 hover:bg-red-800 active:scale-95 cursor-pointer':
+                !form.invalid && password1() === password2()
+            }"
+          >
+            Update Password
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

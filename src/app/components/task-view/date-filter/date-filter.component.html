@@ -1,0 +1,65 @@
+<div
+  class="bg-gray-100 shadow-md border border-gray-300 flex p-4 justify-between items-baseline-last:flex-nowrap flex-wrap gap-4 rounded-md"
+>
+  <div class="flex items-end gap-6">
+    <div class="flex flex-col">
+      <label for="fromDate" class="mb-1 font-semibold text-gray-700"
+        >From Date:</label
+      >
+      <input
+        id="fromDate"
+        type="date"
+        [max]="maxStartDate()"
+        [ngModel]="fromDate()"
+        (ngModelChange)="fromDate.set($event)"
+        class="w-48 px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-0"
+      />
+    </div>
+
+    <div class="flex flex-col">
+      <label for="toDate" class="mb-1 font-semibold text-gray-700"
+        >To Date:</label
+      >
+      <input
+        id="toDate"
+        type="date"
+        [min]="minToDate()"
+        [ngModel]="toDate()"
+        (ngModelChange)="toDate.set($event)"
+        class="w-48 px-3 py-2 border border-black rounded-md focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-0"
+      />
+    </div>
+
+    <button
+      (click)="dateFilter()"
+      class="h-10 px-6 bg-red-950 text-white rounded-md hover:bg-red-900 hover:scale-105 hover:shadow-lg transition-colors cursor-pointer"
+    >
+      Filter
+    </button>
+  </div>
+
+  <div class="flex justify-end gap-3 items-end">
+    <button
+      class="bg-gray-900 text-gray-100 px-4 py-2 rounded shadow transition"
+      (click)="exportAsPdf.emit()"
+      [disabled]="tasksLength() === 0"
+      [ngClass]="{
+        'hover:bg-gray-800 hover:scale-105 cursor-pointer': tasksLength() > 0,
+        'hover:bg-gray-900 hover:scale-100 cursor-auto': tasksLength() === 0
+      }"
+    >
+      Export PDF
+    </button>
+    <button
+      class="bg-green-500 text-white px-4 py-2 rounded shadow transition"
+      (click)="exportAsCsv.emit()"
+      [disabled]="tasksLength() === 0"
+      [ngClass]="{
+        'hover:bg-green-400 hover:scale-105 cursor-pointer': tasksLength() > 0,
+        'hover:bg-green-400 hover:scale-100 cursor-auto': tasksLength() > 0
+      }"
+    >
+      Export CSV
+    </button>
+  </div>
+</div>

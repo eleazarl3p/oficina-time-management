@@ -1,0 +1,109 @@
+<div
+  class="fixed inset-0 z-50 flex justify-center items-center bg-black/70 backdrop-blur-sm"
+>
+  <div class="flex flex-col rounded-2xl bg-white shadow-lg w-md p-6">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-semibold">
+        {{ cc()._id == 0 ? "NEW" : "UPDATE" }} COST CENTER
+      </h2>
+      <button
+        class="leading-0 text-gray-50 bg-gray-600 w-8 h-8 rounded-[50%] hover:scale-105 cursor-pointer"
+        (click)="closeModatEmitter.emit(false)"
+      >
+        X
+      </button>
+    </div>
+
+    <form [formGroup]="ccForm" class="flex flex-col gap-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="ctype"
+          >Type</label
+        >
+        <input
+          type="text"
+          id="ctype"
+          formControlName="code"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="clocation"
+          >Location</label
+        >
+        <input
+          type="text"
+          id="clocation"
+          formControlName="location"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="cdepartment"
+          >Department</label
+        >
+        <input
+          type="text"
+          id="cdepartment"
+          formControlName="department"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
+        />
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700" for="ccompany"
+          >Company Code</label
+        >
+        <input
+          type="text"
+          id="ccompany"
+          formControlName="company_code"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
+        />
+      </div>
+
+      <!-- <div>
+        <label class="block text-sm font-medium text-gray-700" for="cjob"
+          >Jom</label
+        >
+        <input
+          type="text"
+          id="jname"
+          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
+        />
+      </div> -->
+
+      <!-- Buttons -->
+      <div class="flex justify-between pt-4">
+        <button
+          type="button"
+          (click)="delete(cc()._id)"
+          [disabled]="cc()._id == 0"
+          class="px-4 py-2 text-sm text-gray-50 bg-red-800 rounded hover:bg-red-700 mr-2 cursor-pointer"
+          *ngIf="cc()._id > 0"
+        >
+          Delete
+        </button>
+
+        <div class="flex flex-1 justify-end space-x-3">
+          <button
+            type="button"
+            (click)="cancel()"
+            class="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded hover:bg-gray-200 cursor-pointer"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            class="px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-500 cursor-pointer active:scale-95"
+            (click)="onSubmit()"
+          >
+            {{ cc()._id > 0 ? "Update" : "Add" }}
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

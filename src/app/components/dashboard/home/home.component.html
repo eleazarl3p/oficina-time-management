@@ -1,0 +1,24 @@
+<div class="container mx-auto h-[calc(100vh-5rem)] flex bg-amber-300">
+  <app-side-panel [user]="user()"></app-side-panel>
+
+  <div class="flex-1 p-4 overflow-auto">
+    <h1 class="text-3xl font-bold">Dashboard</h1>
+    <p class="text-gray-600">Welcome to the dashboard!</p>
+    <div class="grid grid-cols-3 gap-4 mt-4">
+      <div class="bg-white p-4 shadow rounded">
+        <h2 class="text-xl font-semibold">My Tasks</h2>
+        <p>Content for card 1.</p>
+      </div>
+      <div class="bg-white p-4 shadow rounded">
+        <h2 class="text-xl font-semibold">Card 2</h2>
+        <p>Content for card 2.</p>
+      </div>
+      <div class="bg-white p-4 shadow rounded">
+        <h2 class="text-xl font-semibold">Card 3</h2>
+        <p>Content for card 3.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<router-outlet></router-outlet>

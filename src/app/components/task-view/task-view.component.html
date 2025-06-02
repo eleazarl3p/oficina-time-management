@@ -1,0 +1,176 @@
+<div class="container mx-auto flex bg-gray-100">
+  <div class="flex flex-col bg-white shadow">
+    <app-side-panel
+      (showFilters)="hideFilters.set($event)"
+      [user]="this.loginService.user()!"
+    ></app-side-panel>
+    <div class="space-y-4 pb-6 overflow-y-auto w-60" *ngIf="hideFilters()">
+      <!-- Mode -->
+      <div class="mt-4 px-4">
+        <h2 class="font-semibold text-sm uppercase tracking-wide text-gray-600">
+          Mode
+        </h2>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name="mode"
+            [checked]="mode() === 'itemized'"
+            (change)="setMode('itemized')"
+          />
+          <span>Itemized</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name="mode"
+            [checked]="mode() === 'summarize'"
+            (change)="setMode('summarize')"
+          />
+          <span>Summarized</span>
+        </label>
+
+        <hr class="mt-2" />
+      </div>
+
+      <!-- Status -->
+      <div class="mt-4 px-4">
+        <h2 class="font-semibold text-sm uppercase tracking-wide text-gray-600">
+          Status
+        </h2>
+        <label
+          *ngFor="let status of ['pending', 'approved', 'denied']"
+          class="flex items-center gap-2 cursor-pointer"
+        >
+          <input
+            type="checkbox"
+            [value]="status"
+            [checked]="selectedStatus().includes(status)"
+            (change)="toggleSelection(selectedStatus, status)"
+          />
+          <span>{{ status | titlecase }}</span>
+        </label>
+
+        <hr class="mt-2" />
+      </div>
+
+      <!-- Pay Type -->
+      <div class="mt-4 px-4">
+        <h2 class="font-semibold text-sm uppercase tracking-wide text-gray-600">
+          Pay Type
+        </h2>
+        <label
+          *ngFor="let type of ['WORK', 'LUNCH', 'VACATION']"
+          class="flex items-center gap-2 cursor-pointer"
+        >
+          <input
+            type="checkbox"
+            [value]="type"
+            [checked]="selectedPayTypes().includes(type)"
+            (change)="toggleSelection(selectedPayTypes, type)"
+          />
+          <span>{{ type | titlecase }}</span>
+        </label>
+        <hr class="mt-2" />
+      </div>
+
+      <!-- Users (admin only) -->
+      @if (this.loginService.user()!.isAdmin) {
+      <div class="mt-4 px-4">
+        <h2 class="font-semibold text-sm uppercase tracking-wide text-gray-600">
+          Users
+        </h2>
+        @for (user of users(); track user._id) {
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            [value]="user"
+            [checked]="selectedUsers().includes(user)"
+            (change)="toggleSelection(selectedUsers, user)"
+          />
+          <span>{{ user.fullName }}</span>
+        </label>
+        }
+
+        <hr class="mt-2" />
+      </div>
+      }
+
+      <!-- Jobs -->
+
+      <div class="mt-4 px-4">
+        <h2 class="font-semibold text-sm uppercase tracking-wide text-gray-600">
+          Projects
+        </h2>
+        @for (job of jobs(); track job._id) {
+        <label class="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            [value]="job"
+            [checked]="selectedJobs().includes(job)"
+            (change)="toggleSelection(selectedJobs, job)"
+          />
+          <span>{{ job.name }}</span>
+        </label>
+        }
+
+        <hr class="mt-2" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Right content -->
+  <div class="flex-1 p-4 pr-0">
+    <app-date-filter
+      (dateRangeChanged)="filterRangeDate($event)"
+      (exportAsPdf)="handlePdfExport()"
+      (exportAsCsv)="handleCsvExport()"
+      [tasksLength]="tasksLength()"
+    ></app-date-filter>
+
+    <div *ngIf="mode() === 'itemized'; else summarizedMode">
+      <div *ngIf="!this.loginService.user()!.isAdmin; else adminTable">
+        <app-user-task-table
+          #userTaskTable
+          [fromDate]="fromDate()"
+          [toDate]="toDate()"
+          [tasks]="userTasks()"
+          (editTask)="editTask($event)"
+          (newTask)="createTask()"
+        ></app-user-task-table>
+      </div>
+
+      <ng-template #adminTable>
+        <app-all-task-table
+          #allTaskTable
+          [fromDate]="fromDate()"
+          [toDate]="toDate()"
+          [tasks]="allTasks()"
+          (editTask)="editTask($event)"
+          (newTask)="createTask()"
+          (reviewTask)="reviewTask($event)"
+        ></app-all-task-table>
+      </ng-template>
+    </div>
+    <ng-template #summarizedMode>
+      <app-summarized-table
+        #summarizedTaskTable
+        [fromDate]="fromDate()"
+        [toDate]="toDate()"
+        [tasks]="summarizedTasks()"
+      ></app-summarized-table>
+    </ng-template>
+  </div>
+</div>
+
+@if(selectedTask() != null){
+<app-task-modal [task]="selectedTask()!" (close)="closeTask()"></app-task-modal>
+}
+
+<!-- 
+from line 7
+  [ngClass]="{
+        'h-[calc(100vh-21rem)]': loginService.user()?.isAdmin,
+        'h-[calc(100vh-14rem)]': !loginService.user()?.isAdmin
+      }"
+
+-->

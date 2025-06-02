@@ -1,0 +1,10 @@
+ Date
+Time IN
+Time OUT
+Total Hours
+Company
+Location
+Project
+Item #
+Cost Code
+Approved
