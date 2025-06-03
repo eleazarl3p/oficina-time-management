@@ -19,7 +19,7 @@ export const routes: Routes = [
     path: 'dashboard',
     canActivate: [isLoggedInGuard],
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'tasks' },
+      { path: '', pathMatch: 'full', redirectTo: 'cost-center' },
       {
         path: 'tasks',
         component: TaskViewComponent,
@@ -33,6 +33,7 @@ export const routes: Routes = [
       {
         path: 'cost-center',
         component: CostCenterComponent,
+        // canActivate: [isAdminGuard],
       },
       {
         path: 'settings',

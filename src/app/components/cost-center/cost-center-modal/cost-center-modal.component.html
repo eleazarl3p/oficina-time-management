@@ -4,7 +4,7 @@
   <div class="flex flex-col rounded-2xl bg-white shadow-lg w-md p-6">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-semibold">
-        {{ cc()._id == 0 ? "NEW" : "UPDATE" }} COST CENTER
+        {{ item()._id == 0 ? "NEW" : "UPDATE" }} COST CENTER
       </h2>
       <button
         class="leading-0 text-gray-50 bg-gray-600 w-8 h-8 rounded-[50%] hover:scale-105 cursor-pointer"
@@ -27,7 +27,7 @@
         />
       </div>
 
-      <div>
+      <!-- <div>
         <label class="block text-sm font-medium text-gray-700" for="clocation"
           >Location</label
         >
@@ -37,9 +37,9 @@
           formControlName="location"
           class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
         />
-      </div>
+      </div> -->
 
-      <div>
+      <!-- <div>
         <label class="block text-sm font-medium text-gray-700" for="cdepartment"
           >Department</label
         >
@@ -61,7 +61,7 @@
           formControlName="company_code"
           class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
         />
-      </div>
+      </div> -->
 
       <!-- <div>
         <label class="block text-sm font-medium text-gray-700" for="cjob"
@@ -78,10 +78,10 @@
       <div class="flex justify-between pt-4">
         <button
           type="button"
-          (click)="delete(cc()._id)"
-          [disabled]="cc()._id == 0"
+          (click)="delete(item()._id)"
+          [disabled]="item()._id == 0"
           class="px-4 py-2 text-sm text-gray-50 bg-red-800 rounded hover:bg-red-700 mr-2 cursor-pointer"
-          *ngIf="cc()._id > 0"
+          *ngIf="item()._id > 0"
         >
           Delete
         </button>
@@ -100,7 +100,7 @@
             class="px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-500 cursor-pointer active:scale-95"
             (click)="onSubmit()"
           >
-            {{ cc()._id > 0 ? "Update" : "Add" }}
+            {{ item()._id > 0 ? "Update" : "Add" }}
           </button>
         </div>
       </div>

@@ -6,8 +6,8 @@ export const isAdminGuard: CanActivateFn = (route, state) => {
   const loginService = inject(LoginService);
   const router = inject(Router);
 
-  // if (!loginService.user()?.isAdmin) {
-  //   router.navigate(['/dashboard']);
-  // }
+  if (!loginService.user()?.isAdmin) {
+    router.navigate(['/dashboard/tasks']);
+  }
   return true;
 };

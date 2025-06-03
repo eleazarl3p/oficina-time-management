@@ -2,6 +2,9 @@ import { take } from 'rxjs';
 import { Job } from './job.model';
 import { User } from './user.model';
 import { CostCenter } from './const-center.model';
+import { Department } from './department.model';
+import { Company } from './company.model';
+import { CostLocation } from './cost-location.model';
 
 export class Task {
   _id: number;
@@ -11,13 +14,13 @@ export class Task {
   end_time: string;
   notes?: string | null = null;
   status: string = 'pending';
-  // code?: string | null = null;
   cost_center?: CostCenter | null = null;
   job?: Job | null = null;
-  // item?: string | null = null;
   user: User;
-
   item?: string | null = null;
+  location?: CostLocation | null = null;
+  department?: Department | null = null;
+  company?: Company | null = null;
 
   constructor(
     id: number = 0,
@@ -28,12 +31,12 @@ export class Task {
     notes: string | null = null,
     status: string = 'pending',
     cost_center: CostCenter | null = null,
-    // code: string | null = null,
     job: Job | null = null,
-    // item: string | null = null,
     user: User,
-    // cost_center: CostCenter | null = null,
-    item: string | null = null
+    item: string | null = null,
+    location: CostLocation | null = null,
+    department: Department | null = null,
+    company: Company | null = null
   ) {
     this._id = id;
     this.pay_type = pay_type;
@@ -42,12 +45,13 @@ export class Task {
     this.end_time = end_time;
     this.notes = notes;
     this.status = status;
-    // this.code = code;
     this.job = job;
-    // this.item = item;
     this.user = user;
     this.cost_center = cost_center;
     this.item = item;
+    this.location = location;
+    this.department = department;
+    this.company = company;
   }
 
   elapseTime() {
@@ -61,10 +65,6 @@ export class Task {
   }
 
   get timeIn() {
-    // const date = new Date(this.start_time);
-    // const hours = String(date.getHours()).padStart(2, '0');
-    // const minutes = String(date.getMinutes()).padStart(2, '0');
-    // return `${hours}:${minutes}`;
     return this.getTime(this.start_time);
   }
 

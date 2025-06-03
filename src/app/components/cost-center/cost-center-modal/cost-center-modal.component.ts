@@ -5,37 +5,42 @@ import {
   input,
   OnInit,
   Output,
-} from "@angular/core";
-import { CostCenter } from "../../../models/const-center.model";
-import { NgIf } from "@angular/common";
+} from '@angular/core';
+import { CostCenter } from '../../../models/const-center.model';
+import { NgIf } from '@angular/common';
 import {
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
-} from "@angular/forms";
-import { CostCenterService } from "../../../services/cost-center.service";
+} from '@angular/forms';
+import { CostCenterService } from '../../../services/cost-center.service';
+import { CompanyService } from '../../../services/company.service';
+import { CostDepartmentService } from '../../../services/cost-department.service';
+import { CostLocationService } from '../../../services/cost-location.service';
 
 @Component({
-  selector: "app-cost-center-modal",
+  selector: 'app-cost-center-modal',
   imports: [NgIf, FormsModule, ReactiveFormsModule],
-  templateUrl: "./cost-center-modal.component.html",
-  styleUrl: "./cost-center-modal.component.css",
+  templateUrl: './cost-center-modal.component.html',
+  styleUrl: './cost-center-modal.component.css',
 })
 export class CostCenterModalComponent implements OnInit {
   ccService = inject(CostCenterService);
-  cc = input.required<CostCenter>();
+  locationService = inject(CostLocationService);
+  departmentService = inject(CostDepartmentService);
+  companyService = inject(CompanyService);
+
+  item = input.required<any>();
   @Output() closeModatEmitter = new EventEmitter<boolean>();
 
   fb = inject(FormBuilder);
 
   ccForm = this.fb.group({
     _id: 0,
-    code: ["", Validators.required],
-    location: ["", Validators.required],
-    department: ["", Validators.required],
-    company_code: ["", Validators.required],
+    code: ['', Validators.required],
+    name: ['', Validators.required],
   });
 
   delete(id: number) {
@@ -49,7 +54,7 @@ export class CostCenterModalComponent implements OnInit {
   }
 
   onSubmit() {
-    if (this.cc()._id == 0) {
+    if (this.item()._id == 0) {
       this.ccService.create(this.ccForm.value as CostCenter).subscribe({
         next: (res) => {
           this.closeModatEmitter.emit(true);
@@ -72,11 +77,9 @@ export class CostCenterModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.ccForm.patchValue({
-      _id: this.cc()._id,
-      code: this.cc().code,
-      location: this.cc().location,
-      department: this.cc().department,
-      company_code: this.cc().company_code,
+      _id: this.item()._id,
+      code: this.item().code,
+      name: this.item().name,
     });
   }
 }

@@ -3,24 +3,46 @@
     <app-side-panel [user]="loginService.user()!"></app-side-panel>
   </div>
 
-  <div class="flex-1 p-4 overflow-auto">
-    <h1 class="text-3xl font-bold text-center">COST CENTER</h1>
-    <button
+  <div class="flex-1 pt-4 pl-2 overflow-auto">
+    <h1 class="text-3xl font-bold text-center mb-4">COST CENTER</h1>
+
+    <div class="grid grid-cols-4 gap-3">
+      <app-cost-center-table
+        [title]="'Cost Type'"
+        [list]="costCenters()"
+        (editItemEvent)="editItem($event)"
+      ></app-cost-center-table>
+
+      <app-cost-center-table
+        [title]="'Location'"
+        [list]="costLocations()"
+      ></app-cost-center-table>
+
+      <app-cost-center-table
+        [title]="'Departement'"
+        [list]="costDepartments()"
+      ></app-cost-center-table>
+
+      <app-cost-center-table
+        [title]="'Company'"
+        [list]="costCompanies()"
+      ></app-cost-center-table>
+    </div>
+  </div>
+</div>
+
+@if (currentItem() != null) {
+<app-cost-center-modal
+  [item]="currentItem()!"
+  (closeModatEmitter)="$event == true ? getCCs() : currentItem.set(null)"
+></app-cost-center-modal>
+}
+
+<!-- <button
       class="float-end px-2 py-1 mb-2 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer transition"
       (click)="addCC()"
     >
       Add CC
-    </button>
-    <app-cost-center-table
-      [costCenters]="costCenters()"
-      (editCCEvent)="editCC($event)"
-    ></app-cost-center-table>
-  </div>
-</div>
+    </button> -->
 
-@if (currentCC() != null) {
-<app-cost-center-modal
-  [cc]="currentCC()!"
-  (closeModatEmitter)="$event == true ? getCCs() : currentCC.set(null)"
-></app-cost-center-modal>
-}
+<!-- (editCCEvent)="editCC($event)" -->

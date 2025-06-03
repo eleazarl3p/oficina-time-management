@@ -1,10 +1,10 @@
-<div class="relative overflow-hidden">
+<div class="">
   <table
     class="w-full text-sm text-gray-800 mt-6 border border-gray-300 rounded-md shadow-md"
   >
     <thead class="bg-gray-300 text-black">
       <tr>
-        <th class="px-3 pt-2 text-center text-xl" colspan="12">
+        <th class="px-3 pt-2 text-center text-xl" colspan="13">
           <div class="flex relative">
             <span class="flex-1">TIMESHEET</span>
             <!-- <div class="bg-amber-400"> -->
@@ -19,7 +19,7 @@
         </th>
       </tr>
       <tr class="border-b-1">
-        <th class="px-3 pb-2 text-center font-light" colspan="12">
+        <th class="px-3 pb-2 text-center font-light" colspan="13">
           ({{ fromDate() | date }} - {{ toDate() | date }})
         </th>
       </tr>
@@ -37,7 +37,8 @@
         <!-- <th class="px-3 py-2">Start Time</th>
         <th class="px-3 py-2">End Time</th> -->
         <th class="px-3 py-2">Cost&nbsp;Code</th>
-        <th class="px-3 py-2">Approved</th>
+        <th class="px-3 py-2">Status</th>
+        <th class="px-3 py-2">Approve</th>
       </tr>
     </thead>
     <tbody>
@@ -58,14 +59,38 @@
           {{ task.timeOut }}
         </td>
         <td class="px-3 py-2 text-center">{{ task.elapseTime() }}</td>
-        <td class="px-3 py-2 text-center">{{ task.cost_center?.location }}</td>
+        <td class="px-3 py-2 text-center">{{ task.location?.name }}</td>
         <td class="px-3 py-2 text-center">
-          {{ task.cost_center?.company_code }}
+          {{ task.company?.name }}
         </td>
         <td class="px-3 py-2 text-center">{{ task.job?.name | titlecase }}</td>
         <td class="px-3 py-2 text-center">{{ task.item }}</td>
         <td class="px-3 py-2 text-center">{{ task.cost_center?.code }}</td>
         <td class="px-3 py-2 text-center">{{ task.status | titlecase }}</td>
+        <td class="px-3 py-2 text-center">
+          <div class="flex justify-center items-center gap-1 h-full">
+            <button
+              class="px-4 py-2 rounded text-white transition bg-green-500 hover:bg-green-600 disabled:bg-green-300 disabled:cursor-not-allowed cursor-pointer"
+              [disabled]="!task.pending"
+              (click)="
+                $event.stopPropagation();
+                reviewTask.emit({ id: task._id, approve: true })
+              "
+            >
+              Yes
+            </button>
+            <button
+              class="px-4 py-2 rounded text-white transition bg-red-500 hover:bg-red-600 disabled:bg-red-300 disabled:cursor-not-allowed cursor-pointer"
+              [disabled]="!task.pending"
+              (click)="
+                $event.stopPropagation();
+                reviewTask.emit({ id: task._id, approve: false })
+              "
+            >
+              No
+            </button>
+          </div>
+        </td>
       </tr>
       }
     </tbody>
@@ -77,4 +102,3 @@
     +
   </button> -->
 </div>
-<!-- max-h-[calc(100vh-14rem)] -->

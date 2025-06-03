@@ -6,32 +6,35 @@ import {
   WritableSignal,
   signal,
   inject,
-} from "@angular/core";
-import { SidePanelComponent } from "../dashboard/side-panel/side-panel.component";
-import { UserTaskTableComponent } from "./user-task-table/user-task-table.component";
-import { Job } from "../../models/job.model";
-import { User } from "../../models/user.model";
-import { Task } from "../../models/task.model";
-import { AllTaskTableComponent } from "./all-task-table/all-task-table.component";
-import { DateFilterComponent } from "./date-filter/date-filter.component";
-import { CommonModule, TitleCasePipe } from "@angular/common";
-import { SummarizedTableComponent } from "./summarized-table/summarized-table.component";
-import { ISummarizedTask } from "../../models/summarized-task.interface";
+} from '@angular/core';
+import { SidePanelComponent } from '../dashboard/side-panel/side-panel.component';
+import { UserTaskTableComponent } from './user-task-table/user-task-table.component';
+import { Job } from '../../models/job.model';
+import { User } from '../../models/user.model';
+import { Task } from '../../models/task.model';
+import { AllTaskTableComponent } from './all-task-table/all-task-table.component';
+import { DateFilterComponent } from './date-filter/date-filter.component';
+import { CommonModule, TitleCasePipe } from '@angular/common';
+import { SummarizedTableComponent } from './summarized-table/summarized-table.component';
+import { ISummarizedTask } from '../../models/summarized-task.interface';
 
-import { saveAs } from "file-saver";
+import { saveAs } from 'file-saver';
 
-import { ViewChild } from "@angular/core";
-import { TaskModalComponent } from "./task-modal/task-modal.component";
-import { LoginService } from "../../services/login.service";
-import { TaskService } from "../../services/task.service";
-import { map, Subscription } from "rxjs";
-import { DateTime } from "luxon";
-import { HttpErrorResponse } from "@angular/common/http";
-import { Router } from "@angular/router";
-import { CostCenter } from "../../models/const-center.model";
+import { ViewChild } from '@angular/core';
+import { TaskModalComponent } from './task-modal/task-modal.component';
+import { LoginService } from '../../services/login.service';
+import { TaskService } from '../../services/task.service';
+import { map, Subscription } from 'rxjs';
+import { DateTime } from 'luxon';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { CostCenter } from '../../models/const-center.model';
+import { Department } from '../../models/department.model';
+import { Company } from '../../models/company.model';
+import { CostLocation } from '../../models/cost-location.model';
 
 @Component({
-  selector: "app-task-view",
+  selector: 'app-task-view',
   imports: [
     SidePanelComponent,
     DateFilterComponent,
@@ -42,17 +45,17 @@ import { CostCenter } from "../../models/const-center.model";
     TitleCasePipe,
     TaskModalComponent,
   ],
-  templateUrl: "./task-view.component.html",
-  styleUrl: "./task-view.component.css",
+  templateUrl: './task-view.component.html',
+  styleUrl: './task-view.component.css',
 })
 export class TaskViewComponent implements OnInit {
   taskService = inject(TaskService);
   router = inject(Router);
   subscriptions: Subscription | null = null;
 
-  @ViewChild("userTaskTable") userTaskTable!: UserTaskTableComponent;
-  @ViewChild("allTaskTable") allTaskTable!: AllTaskTableComponent;
-  @ViewChild("summarizedTaskTable")
+  @ViewChild('userTaskTable') userTaskTable!: UserTaskTableComponent;
+  @ViewChild('allTaskTable') allTaskTable!: AllTaskTableComponent;
+  @ViewChild('summarizedTaskTable')
   summarizedTaskTable!: SummarizedTableComponent;
   private tasksList: Task[] = [];
 
@@ -60,9 +63,9 @@ export class TaskViewComponent implements OnInit {
   selectedJobs: WritableSignal<Job[]> = signal<Job[]>([]);
   selectedUsers: WritableSignal<User[]> = signal<User[]>([]);
   selectedStatus: WritableSignal<string[]> = signal<string[]>([]);
-  fromDate = signal<string>("");
-  toDate = signal<string>("");
-  mode = signal<"itemized" | "summarize">("itemized");
+  fromDate = signal<string>('');
+  toDate = signal<string>('');
+  mode = signal<'itemized' | 'summarize'>('itemized');
 
   loginService = inject(LoginService);
 
@@ -110,7 +113,7 @@ export class TaskViewComponent implements OnInit {
   });
 
   tasksLength = computed(() => {
-    if (this.mode() == "itemized") {
+    if (this.mode() == 'itemized') {
     }
     return this.summarizedTasks().length;
   });
@@ -131,14 +134,14 @@ export class TaskViewComponent implements OnInit {
 
     const from = fromDate
       ? DateTime.fromISO(fromDate, {
-          zone: "local",
-        }).startOf("day")
+          zone: 'local',
+        }).startOf('day')
       : null;
 
     const to = toDate
       ? DateTime.fromISO(toDate, {
-          zone: "local",
-        }).endOf("day")
+          zone: 'local',
+        }).endOf('day')
       : null;
 
     const payTypes = this.selectedPayTypes();
@@ -193,10 +196,10 @@ export class TaskViewComponent implements OnInit {
   }
 
   formatDate(date: string | Date): string {
-    return new Date(date).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
     });
   }
 
@@ -204,8 +207,8 @@ export class TaskViewComponent implements OnInit {
     const now = new Date();
     now.setMinutes(now.getMinutes() + offset); // Apply minute offset
 
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
 
     return `${hours}:${minutes}`; // Format: HH:mm
   }
@@ -214,8 +217,8 @@ export class TaskViewComponent implements OnInit {
     const now = new Date(date);
     now.setMinutes(now.getMinutes()); // Apply minute offset
 
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
 
     return `${hours}:${minutes}`; // Format: HH:mm
   }
@@ -235,7 +238,7 @@ export class TaskViewComponent implements OnInit {
                 t.start_time,
                 t.end_time,
                 t.notes ?? null,
-                t.status ?? "pending",
+                t.status ?? 'pending',
                 t.cost_center
                   ? Object.assign(new CostCenter(), t.cost_center)
                   : null,
@@ -249,7 +252,14 @@ export class TaskViewComponent implements OnInit {
                   t.user.password,
                   t.user.role
                 ), // properly instantiate User with all required arguments
-                t.item ?? null
+                t.item ?? null,
+                t.location
+                  ? new CostLocation(t.location._id, t.location.name)
+                  : null,
+                t.department
+                  ? new Department(t.department._id, t.department.name)
+                  : null,
+                t.company ? new Company(t.company._id, t.company.name) : null
               )
           );
           console.log(this.tasksList);
@@ -259,8 +269,8 @@ export class TaskViewComponent implements OnInit {
           const sevenDaysAgo = new Date();
           sevenDaysAgo.setDate(today.getDate() - 7);
 
-          this.fromDate.set(sevenDaysAgo.toISOString().split("T")[0]);
-          this.toDate.set(today.toISOString().split("T")[0]);
+          this.fromDate.set(sevenDaysAgo.toISOString().split('T')[0]);
+          this.toDate.set(today.toISOString().split('T')[0]);
 
           const uniqueUsers = Array.from(
             new Map(this.tasksList.map((t) => [t.user._id, t.user])).values()
@@ -292,7 +302,7 @@ export class TaskViewComponent implements OnInit {
         },
         error: (err: HttpErrorResponse) => {
           if (err.status == 401) {
-            this.router.navigate(["/login"]);
+            this.router.navigate(['/login']);
           }
         },
       });
@@ -323,10 +333,10 @@ export class TaskViewComponent implements OnInit {
   }
 
   handleCsvExport() {
-    let csvContent = "";
+    let csvContent = '';
 
-    if (this.mode() == "itemized") {
-      csvContent = "User, Date, Pay Type, Hour, Project, Status\n";
+    if (this.mode() == 'itemized') {
+      csvContent = 'User, Date, Pay Type, Hour, Project, Status\n';
       let tasks = [];
       if (this.loginService.user()!.isAdmin) {
         tasks = this.allTasks();
@@ -341,27 +351,27 @@ export class TaskViewComponent implements OnInit {
           task.elapseTime(),
           `"${task.job?.name}"`,
           task.status,
-        ].join(",");
-        csvContent += row + "\n";
+        ].join(',');
+        csvContent += row + '\n';
       });
 
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      saveAs(blob, "timesheet-report.csv");
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      saveAs(blob, 'timesheet-report.csv');
     } else {
-      csvContent = "Project, Hours\n";
+      csvContent = 'Project, Hours\n';
 
       this.summarizedTasks().forEach((task) => {
-        const row = [task.job, task.hours].join(",");
-        csvContent += row + "\n";
+        const row = [task.job, task.hours].join(',');
+        csvContent += row + '\n';
       });
 
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      saveAs(blob, "summary-report.csv");
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      saveAs(blob, 'summary-report.csv');
     }
   }
 
   handlePdfExport() {
-    if (this.mode() == "itemized") {
+    if (this.mode() == 'itemized') {
       if (this.loginService.user()!.isAdmin) {
         this.allTaskTable.exportPdf();
       } else {
@@ -376,8 +386,8 @@ export class TaskViewComponent implements OnInit {
     const formatDate = (value: string | Date | null): string | null => {
       if (!value) return null;
       const d = new Date(value);
-      return d.toLocaleDateString("sv-SE");
-      return d.toISOString().split("T")[0]; // => "YYYY-MM-DD"
+      return d.toLocaleDateString('sv-SE');
+      return d.toISOString().split('T')[0]; // => "YYYY-MM-DD"
     };
 
     // const formatTime = (value: string | Date | null): string | null => {
@@ -399,12 +409,12 @@ export class TaskViewComponent implements OnInit {
     // Provide default or empty values for all required Task constructor arguments
     const task = new Task(
       0, // _id
-      "WORK", // pay_type
+      'WORK', // pay_type
       this.getTodayDate(), // date
       this.getCurrentTime(), // start_time
       this.getCurrentTime(10), // end_time
       null, // notes
-      "pending", // status
+      'pending', // status
       null, // code
       null, // job
       this.loginService.user()! // user (assuming current user)
@@ -414,7 +424,7 @@ export class TaskViewComponent implements OnInit {
     this.isModalOpen = true;
   }
 
-  setMode(value: "itemized" | "summarize") {
+  setMode(value: 'itemized' | 'summarize') {
     this.mode.set(value);
     // You can also re-filter if mode affects output
     this.filterTasks(this.fromDate(), this.toDate());
@@ -433,8 +443,8 @@ export class TaskViewComponent implements OnInit {
 
   getTodayDate(): string {
     const today = new Date();
-    return today.toLocaleDateString("sv-SE");
-    return today.toISOString().split("T")[0]; // 'YYYY-MM-DD'
+    return today.toLocaleDateString('sv-SE');
+    return today.toISOString().split('T')[0]; // 'YYYY-MM-DD'
   }
 
   reviewTask(event: { id: number; approve: boolean }) {

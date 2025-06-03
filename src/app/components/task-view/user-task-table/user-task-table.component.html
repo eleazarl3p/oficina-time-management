@@ -24,7 +24,7 @@
         <!-- <th class="px-3 py-2">Start Time</th>
         <th class="px-3 py-2">End Time</th> -->
         <th class="px-3 py-2">Cost&nbsp;Code</th>
-        <th class="px-3 py-2">Approved</th>
+        <th class="px-3 py-2">Status</th>
       </tr>
     </thead>
     <tbody>
@@ -42,9 +42,9 @@
           {{ task.timeOut }}
         </td>
         <td class="px-3 py-2 text-center">{{ task.elapseTime() }}</td>
-        <td class="px-3 py-2 text-center">{{ task.cost_center?.location }}</td>
+        <td class="px-3 py-2 text-center">{{ task.location?.name }}</td>
         <td class="px-3 py-2 text-center">
-          {{ task.cost_center?.company_code }}
+          {{ task.company?.name }}
         </td>
         <td class="px-3 py-2 text-center">{{ task.job?.name | titlecase }}</td>
         <td class="px-3 py-2 text-center">{{ task.item }}</td>

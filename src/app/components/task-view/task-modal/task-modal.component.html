@@ -3,9 +3,9 @@
   class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
 >
   <!-- Modal Box -->
-  <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
+  <div class="bg-gray-50 rounded-2xl shadow-lg w-full max-w-md">
     <!-- Modal Header -->
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between p-6">
       <h2 class="text-xl font-semibold">
         {{ task()._id == 0 ? "NEW TASK" : "UPDATE TASK" }}
       </h2>
@@ -18,13 +18,17 @@
     </div>
 
     <!-- Modal Content -->
-    <form [formGroup]="taskForm" (ngSubmit)="submit()" class="space-y-4">
+    <form
+      [formGroup]="taskForm"
+      (ngSubmit)="submit()"
+      class="space-y-4 max-h-[80vh] p-6 overflow-y-auto"
+    >
       <div>
         <label class="block text-sm font-medium text-gray-700">Date</label>
         <input
           type="date"
           formControlName="date"
-          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
         />
       </div>
 
@@ -36,7 +40,7 @@
           <input
             type="time"
             formControlName="start_time"
-            class="mt-1 w-full rounded border-gray-300 shadow-sm"
+            class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
           />
         </div>
         <div>
@@ -46,7 +50,7 @@
           <input
             type="time"
             formControlName="end_time"
-            class="mt-1 w-full rounded border-gray-300 shadow-sm"
+            class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
           />
         </div>
       </div>
@@ -55,7 +59,7 @@
         <label class="block text-sm font-medium text-gray-700">Pay Type</label>
         <select
           formControlName="pay_type"
-          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
         >
           <option value="WORK">Work</option>
           <option value="LUNCH">Lunch</option>
@@ -67,7 +71,7 @@
         <label class="block text-sm font-medium text-gray-700">Project</label>
         <select
           formControlName="job"
-          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
         >
           <option *ngFor="let job of jobs()" [ngValue]="job._id">
             {{ job.name }}
@@ -79,7 +83,7 @@
         <label class="block text-sm font-medium text-gray-700">Item #</label>
         <select
           formControlName="item"
-          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
         >
           <option *ngFor="let item of items()" [ngValue]="item">
             {{ item }}
@@ -87,25 +91,75 @@
         </select>
       </div>
 
-      <div *ngIf="taskForm.value.pay_type === 'WORK'">
-        <label class="block text-sm font-medium text-gray-700"
-          >Cost Center</label
-        >
-        <select
-          formControlName="cost_center"
-          class="mt-1 w-full rounded border-gray-300 shadow-sm"
-        >
-          <option *ngFor="let cc of costCenters()" [ngValue]="cc._id">
-            {{ cc.code }} | {{ cc.location }}
-          </option>
-        </select>
+      <div
+        *ngIf="taskForm.value.pay_type === 'WORK'"
+        class="grid grid-cols-2 gap-4"
+      >
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Cost Center</label
+          >
+          <select
+            formControlName="cost_center"
+            class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
+          >
+            <option *ngFor="let cc of costCenters()" [ngValue]="cc._id">
+              {{ cc.code }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Location</label
+          >
+          <select
+            formControlName="location"
+            class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
+          >
+            <option *ngFor="let cc of costLocations()" [ngValue]="cc._id">
+              {{ cc.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div
+        *ngIf="taskForm.value.pay_type === 'WORK'"
+        class="grid grid-cols-2 gap-4"
+      >
+        <div>
+          <label class="block text-sm font-medium text-gray-700"
+            >Departement</label
+          >
+          <select
+            formControlName="department"
+            class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
+          >
+            <option *ngFor="let cc of costDepartments()" [ngValue]="cc._id">
+              {{ cc.name }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700">Company</label>
+          <select
+            formControlName="company"
+            class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
+          >
+            <option *ngFor="let cc of costCompanies()" [ngValue]="cc._id">
+              {{ cc.name }}
+            </option>
+          </select>
+        </div>
       </div>
 
       <div *ngIf="loginService.user()?.isAdmin">
         <label class="block text-sm font-medium text-gray-700">User</label>
         <select
           formControlName="user"
-          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
         >
           <option *ngFor="let user of users()" [ngValue]="user._id">
             {{ user.first_name }}
@@ -118,7 +172,7 @@
         <textarea
           formControlName="notes"
           rows="2"
-          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
         ></textarea>
       </div>
 
@@ -129,7 +183,7 @@
         <select
           formControlName="status"
           id="stat"
-          class="mt-1 w-full rounded border-gray-300 shadow-sm"
+          class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
         >
           <option value="approved">Approved</option>
           <option value="denied">Denied</option>
@@ -169,5 +223,6 @@
         </div>
       </div>
     </form>
+    <div class="h-6"></div>
   </div>
 </div>
