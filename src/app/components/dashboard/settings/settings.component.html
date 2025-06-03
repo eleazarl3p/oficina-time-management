@@ -109,13 +109,14 @@
           <button
             type="submit"
             class="px-4 py-2 text-white rounded-md"
-            [disabled]="form.invalid || password1 !== password2"
+            [disabled]="form.invalid || password1() !== password2()"
             [ngClass]="{
               'bg-gray-400 hover:bg-gray-400 cursor-auto':
                 form.invalid || password1 !== password2,
               'bg-red-900 hover:bg-red-800 active:scale-95 cursor-pointer':
                 !form.invalid && password1() === password2()
             }"
+            (click)="updatePassword()"
           >
             Update Password
           </button>

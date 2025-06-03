@@ -40,23 +40,27 @@
 
   <div class="flex justify-end gap-3 items-end">
     <button
-      class="bg-gray-900 text-gray-100 px-4 py-2 rounded shadow transition"
+      class="text-gray-100 px-4 py-2 rounded shadow transition"
       (click)="exportAsPdf.emit()"
       [disabled]="tasksLength() === 0"
       [ngClass]="{
-        'hover:bg-gray-800 hover:scale-105 cursor-pointer': tasksLength() > 0,
-        'hover:bg-gray-900 hover:scale-100 cursor-auto': tasksLength() === 0
+        'bg-gray-800 hover:bg-gray-800 hover:scale-100 cursor-pointer':
+          tasksLength() > 0,
+        'bg-gray-500 hover:bg-gray-500 hover:scale-100 cursor-auto':
+          tasksLength() === 0
       }"
     >
       Export PDF
     </button>
     <button
-      class="bg-green-500 text-white px-4 py-2 rounded shadow transition"
+      class="text-white px-4 py-2 rounded shadow transition"
       (click)="exportAsCsv.emit()"
       [disabled]="tasksLength() === 0"
       [ngClass]="{
-        'hover:bg-green-400 hover:scale-105 cursor-pointer': tasksLength() > 0,
-        'hover:bg-green-400 hover:scale-100 cursor-auto': tasksLength() > 0
+        'bg-green-500 hover:bg-green-400 hover:scale-105 cursor-pointer':
+          tasksLength() > 0,
+        'bg-green-300 hover:bg-green-300 hover:scale-100 cursor-auto':
+          tasksLength() === 0
       }"
     >
       Export CSV

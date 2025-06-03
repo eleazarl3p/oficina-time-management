@@ -18,7 +18,8 @@ import { CommonModule, TitleCasePipe } from '@angular/common';
 import { SummarizedTableComponent } from './summarized-table/summarized-table.component';
 import { ISummarizedTask } from '../../models/summarized-task.interface';
 
-import { saveAs } from 'file-saver';
+// import { saveAs } from 'file-saver';
+import { saveAs } from 'file-saver-es';
 
 import { ViewChild } from '@angular/core';
 import { TaskModalComponent } from './task-modal/task-modal.component';
@@ -114,6 +115,11 @@ export class TaskViewComponent implements OnInit {
 
   tasksLength = computed(() => {
     if (this.mode() == 'itemized') {
+      if (this.loginService.user()?.isAdmin) {
+        return this.allTasks().length;
+      } else {
+        return this.userTasks().length;
+      }
     }
     return this.summarizedTasks().length;
   });
