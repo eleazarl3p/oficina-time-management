@@ -13,4 +13,16 @@ export class CostLocationService {
   get() {
     return this.http.get<CostLocation[]>(this.base_url);
   }
+
+  create(loc: CostLocation) {
+    return this.http.post(this.base_url, loc);
+  }
+
+  update(loc: CostLocation) {
+    return this.http.patch(this.base_url + loc._id, loc);
+  }
+
+  delete(id: number) {
+    return this.http.delete(this.base_url + id);
+  }
 }

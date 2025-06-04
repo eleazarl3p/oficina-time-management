@@ -3,17 +3,25 @@
 >
   <thead class="bg-gray-300 text-black">
     <tr>
-      <th class="px-3 py-2">{{ title() }}</th>
+      <th class="px-3 py-2 flex justify-between items-center">
+        <span>{{ list().length > 0 ? list()[0].type : "x" }} </span>
+        <button
+          class="leading-0 w-8 h-8 pb-0.5 flex justify-center items-center bg-gray-900 text-white text-xl rounded-[50%] hover:scale-105 cursor-pointer"
+          (click)="add()"
+        >
+          +
+        </button>
+      </th>
     </tr>
   </thead>
   <tbody>
     @for (item of list(); track item._id) {
     <tr
       class="odd:bg-white even:bg-gray-100 hover:bg-gray-50 cursor-pointer"
-      (click)="editItemEvent.emit({ tab: title(), item: item })"
+      (click)="editItemEvent.emit(item)"
     >
       <td class="px-3 py-2 text-center">
-        {{ item.code ? item.code : item.name }}
+        {{ item.name }}
       </td>
     </tr>
     }

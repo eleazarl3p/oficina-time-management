@@ -1,0 +1,6 @@
+export enum CostOption {
+  CC = 'COST-CENTER',
+  LOCATION = 'LOCATION',
+  DEPARTMENT = 'DEPARTMENT',
+  COMPANY = 'COMPANY',
+}

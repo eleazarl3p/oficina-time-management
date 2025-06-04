@@ -10,22 +10,29 @@
       <app-cost-center-table
         [title]="'Cost Type'"
         [list]="costCenters()"
+        [costType]="cop.CC"
         (editItemEvent)="editItem($event)"
       ></app-cost-center-table>
 
       <app-cost-center-table
         [title]="'Location'"
         [list]="costLocations()"
+        [costType]="cop.LOCATION"
+        (editItemEvent)="editItem($event)"
       ></app-cost-center-table>
 
       <app-cost-center-table
         [title]="'Departement'"
         [list]="costDepartments()"
+        [costType]="cop.DEPARTMENT"
+        (editItemEvent)="editItem($event)"
       ></app-cost-center-table>
 
       <app-cost-center-table
         [title]="'Company'"
         [list]="costCompanies()"
+        [costType]="cop.COMPANY"
+        (editItemEvent)="editItem($event)"
       ></app-cost-center-table>
     </div>
   </div>
@@ -34,7 +41,7 @@
 @if (currentItem() != null) {
 <app-cost-center-modal
   [item]="currentItem()!"
-  (closeModatEmitter)="$event == true ? getCCs() : currentItem.set(null)"
+  (closeModatEmitter)="close($event)"
 ></app-cost-center-modal>
 }
 

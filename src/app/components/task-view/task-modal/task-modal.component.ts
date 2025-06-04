@@ -99,21 +99,39 @@ export class TaskModalComponent implements OnInit {
 
     const task = this.task();
 
+    // this.taskForm = this.fb.group({
+    //   _id: [task._id],
+    //   pay_type: [task.pay_type, Validators.required],
+
+    //   date: [task.date, Validators.required],
+    //   start_time: [task.start_time, Validators.required],
+    //   end_time: [task.end_time, Validators.required],
+    //   notes: [task.notes ?? ''],
+    //   status: [task.status, Validators.required],
+    //   cost_center: [task.cost_center?._id ?? null],
+    //   job: [task.job?._id ?? null], // store job._id
+    //   item: [task.item ?? null],
+    //   user: [task.user?._id ?? null, Validators.required], // store user._id
+    //   location: [task.location?._id ?? null, Validators.required],
+    //   department: [task.department?._id ?? null, Validators.required],
+    //   company: [task.company?._id ?? null, Validators.required],
+    // });
+
     this.taskForm = this.fb.group({
       _id: [task._id],
       pay_type: [task.pay_type, Validators.required],
-      // date: [formatDate(task.date) ?? this.getTodayDate(), Validators.required],
-      // start_time: [startTime, Validators.required],
-      // end_time: [endTime, Validators.required],
+
       date: [task.date, Validators.required],
       start_time: [task.start_time, Validators.required],
       end_time: [task.end_time, Validators.required],
-      notes: [task.notes ?? ''],
+      notes: [task.notes ?? '', [Validators.maxLength(255)]],
       status: [task.status, Validators.required],
-      cost_center: [task.cost_center?._id ?? null],
-      job: [task.job?._id ?? null], // store job._id
-      item: [task.item ?? null],
-      user: [task.user?._id ?? null, Validators.required], // store user._id
+
+      cost_center: [task.cost_center?._id ?? null, Validators.required],
+      job: [task.job?._id ?? null], // only required if pay_type is 'WORK'
+      item: [task.item ?? null], // only required if pay_type is 'WORK'
+
+      user: [task.user?._id ?? null, Validators.required],
       location: [task.location?._id ?? null, Validators.required],
       department: [task.department?._id ?? null, Validators.required],
       company: [task.company?._id ?? null, Validators.required],
@@ -123,6 +141,22 @@ export class TaskModalComponent implements OnInit {
       const job = this.jobs().find((j) => j._id === Number(jobId));
       this.items.set(job?.items ?? []);
       this.taskForm.get('item')?.setValue(null);
+    });
+
+    this.taskForm.get('pay_type')?.valueChanges.subscribe((type) => {
+      const jobCtrl = this.taskForm.get('job');
+      const itemCtrl = this.taskForm.get('item');
+
+      if (type === 'WORK') {
+        jobCtrl?.setValidators([Validators.required]);
+        itemCtrl?.setValidators([Validators.required]);
+      } else {
+        jobCtrl?.clearValidators();
+        itemCtrl?.clearValidators();
+      }
+
+      jobCtrl?.updateValueAndValidity();
+      itemCtrl?.updateValueAndValidity();
     });
   }
 

@@ -4,25 +4,25 @@
   <div class="flex flex-col rounded-2xl bg-white shadow-lg w-md p-6">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-semibold">
-        {{ item()._id == 0 ? "NEW" : "UPDATE" }} COST CENTER
+        {{ item()._id == 0 ? "NEW" : "UPDATE" }} {{ item().type }}
       </h2>
       <button
         class="leading-0 text-gray-50 bg-gray-600 w-8 h-8 rounded-[50%] hover:scale-105 cursor-pointer"
-        (click)="closeModatEmitter.emit(false)"
+        (click)="closeModatEmitter.emit(null)"
       >
         X
       </button>
     </div>
 
-    <form [formGroup]="ccForm" class="flex flex-col gap-4">
+    <form [formGroup]="itemForm" class="flex flex-col gap-4">
       <div>
-        <label class="block text-sm font-medium text-gray-700" for="ctype"
-          >Type</label
-        >
+        <label class="block text-sm font-medium text-gray-700" for="itemName">{{
+          item().type == cop.CC ? "Code" : "Name"
+        }}</label>
         <input
           type="text"
-          id="ctype"
-          formControlName="code"
+          id="itemName"
+          formControlName="name"
           class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
         />
       </div>

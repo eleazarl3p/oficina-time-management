@@ -13,4 +13,16 @@ export class CostDepartmentService {
   get() {
     return this.http.get<Department[]>(this.base_url);
   }
+
+  create(dep: Department) {
+    return this.http.post(this.base_url, dep);
+  }
+
+  update(dep: Department) {
+    return this.http.patch(this.base_url + dep._id, dep);
+  }
+
+  delete(id: number) {
+    return this.http.delete(this.base_url + id);
+  }
 }

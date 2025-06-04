@@ -11,6 +11,9 @@ import { Department } from '../../models/department.model';
 import { CompanyService } from '../../services/company.service';
 import { CostDepartmentService } from '../../services/cost-department.service';
 import { CostLocationService } from '../../services/cost-location.service';
+import { CostOption } from '../../enums/cost-option.enum';
+import { JsonPipe } from '@angular/common';
+import { ICost } from '../../interfaces/cost.interface';
 
 @Component({
   selector: 'app-cost-center',
@@ -29,12 +32,13 @@ export class CostCenterComponent implements OnInit {
   departmentService = inject(CostDepartmentService);
   companyService = inject(CompanyService);
 
-  costCenters = signal<any[]>([]);
-  costLocations = signal<CostLocation[]>([]);
-  costDepartments = signal<Department[]>([]);
-  costCompanies = signal<Company[]>([]);
+  costCenters = signal<ICost[]>([]);
+  costLocations = signal<ICost[]>([]);
+  costDepartments = signal<ICost[]>([]);
+  costCompanies = signal<ICost[]>([]);
 
   currentItem = signal<any | null>(null);
+  cop = CostOption;
 
   ngOnInit(): void {
     this.getCCs();
@@ -47,14 +51,36 @@ export class CostCenterComponent implements OnInit {
     this.currentItem.set(new CostCenter());
   }
 
-  close() {
-    this.getCCs();
+  close(event: ICost | null) {
+    if (event == null) {
+      this.currentItem.set(null);
+      return;
+    }
+
+    switch (event.type) {
+      case CostOption.CC:
+        this.getCCs();
+        break;
+
+      case CostOption.LOCATION:
+        this.getLocations();
+        break;
+
+      case CostOption.DEPARTMENT:
+        this.getDepartments();
+        break;
+
+      case CostOption.COMPANY:
+        this.getCompanies();
+        break;
+    }
+
+    this.currentItem.set(null);
   }
 
-  editItem(event: { title: string; item: any }) {
-    this.currentItem.set(event.item);
-
-    console.log(event);
+  editItem(event: ICost) {
+    this.currentItem.set(event);
+    //console.log(event);
   }
 
   // getCCs() {
@@ -71,14 +97,18 @@ export class CostCenterComponent implements OnInit {
 
   getCCs() {
     this.ccService.getCCs().subscribe((res) => {
-      const ccs = res.map((cc) => Object.assign(new CostCenter(), cc));
+      const ccs = res.map((cc) => {
+        return { _id: cc._id, name: cc.code, type: CostOption.CC };
+      });
       this.costCenters.set(ccs);
     });
   }
 
   getLocations() {
     this.locationService.get().subscribe((res) => {
-      const lct = res.map((l) => Object.assign(new CostLocation(), l));
+      const lct = res.map((l) => {
+        return { _id: l._id, name: l.name, type: CostOption.LOCATION };
+      });
 
       this.costLocations.set(lct);
     });
@@ -86,7 +116,9 @@ export class CostCenterComponent implements OnInit {
 
   getDepartments() {
     this.departmentService.get().subscribe((res) => {
-      const dpts = res.map((d) => Object.assign(new Department(), d));
+      const dpts = res.map((d) => {
+        return { _id: d._id, name: d.name, type: CostOption.DEPARTMENT };
+      });
 
       this.costDepartments.set(dpts);
     });
@@ -94,7 +126,9 @@ export class CostCenterComponent implements OnInit {
 
   getCompanies() {
     this.companyService.get().subscribe((res) => {
-      const cmps = res.map((c) => Object.assign(new Company(), c));
+      const cmps = res.map((c) => {
+        return { _id: c._id, name: c.name, type: CostOption.COMPANY };
+      });
 
       this.costCompanies.set(cmps);
     });
