@@ -5,6 +5,7 @@ import {
   input,
   OnInit,
   Output,
+  signal,
 } from '@angular/core';
 import { CostCenter } from '../../../models/const-center.model';
 import { NgIf } from '@angular/common';
@@ -51,6 +52,8 @@ export class CostCenterModalComponent implements OnInit {
     option: CostOption,
   });
 
+  message_error = signal<string | null>(null);
+
   delete(id: number) {
     // this.ccService.delete(id).subscribe((res) => {
     //   this.closeModatEmitter.emit(this.item());
@@ -59,11 +62,11 @@ export class CostCenterModalComponent implements OnInit {
     switch (this.item().type) {
       case CostOption.CC:
         this.ccService.delete(id).subscribe({
-          next: (res) => {
+          next: (_) => {
             this.closeModatEmitter.emit(this.item());
           },
-          error: (err) => {
-            console.log(err);
+          error: (res) => {
+            this.message_error.set(res.error.message);
           },
         });
         break;
@@ -72,8 +75,8 @@ export class CostCenterModalComponent implements OnInit {
           next: (res) => {
             this.closeModatEmitter.emit(this.item());
           },
-          error: (err) => {
-            console.log(err);
+          error: (res) => {
+            this.message_error.set(res.error.message);
           },
         });
         break;
@@ -82,8 +85,8 @@ export class CostCenterModalComponent implements OnInit {
           next: (res) => {
             this.closeModatEmitter.emit(this.item());
           },
-          error: (err) => {
-            console.log(err);
+          error: (res) => {
+            this.message_error.set(res.error.message);
           },
         });
 
@@ -93,8 +96,8 @@ export class CostCenterModalComponent implements OnInit {
           next: (res) => {
             this.closeModatEmitter.emit(this.item());
           },
-          error: (err) => {
-            console.log(err);
+          error: (res) => {
+            this.message_error.set(res.error.message);
           },
         });
     }
@@ -105,7 +108,8 @@ export class CostCenterModalComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.itemForm.valid) {
+    if (this.itemForm.invalid) {
+      this.itemForm.markAllAsTouched();
       return;
     }
     if (this.item()._id == 0) {
@@ -114,11 +118,11 @@ export class CostCenterModalComponent implements OnInit {
           const { _id, name } = this.itemForm.value;
           const cost = new CostCenter(_id ?? 0, name ?? undefined);
           this.ccService.create(cost).subscribe({
-            next: (res) => {
+            next: (_) => {
               this.closeModatEmitter.emit(this.item());
             },
-            error: (err) => {
-              console.log(err);
+            error: (res) => {
+              this.message_error.set(res.error.message);
             },
           });
           break;
@@ -126,11 +130,11 @@ export class CostCenterModalComponent implements OnInit {
           this.locationService
             .create(this.itemForm.value as CostLocation)
             .subscribe({
-              next: (res) => {
+              next: (_) => {
                 this.closeModatEmitter.emit(this.item());
               },
-              error: (err) => {
-                console.log(err);
+              error: (res) => {
+                this.message_error.set(res.error.message);
               },
             });
           break;
@@ -138,22 +142,22 @@ export class CostCenterModalComponent implements OnInit {
           this.departmentService
             .create(this.itemForm.value as Department)
             .subscribe({
-              next: (res) => {
+              next: (_) => {
                 this.closeModatEmitter.emit(this.item());
               },
-              error: (err) => {
-                console.log(err);
+              error: (res) => {
+                this.message_error.set(res.error.message);
               },
             });
 
           break;
         case CostOption.COMPANY:
           this.companyService.create(this.itemForm.value as Company).subscribe({
-            next: (res) => {
+            next: (_) => {
               this.closeModatEmitter.emit(this.item());
             },
-            error: (err) => {
-              console.log(err);
+            error: (res) => {
+              this.message_error.set(res.error.message);
             },
           });
       }
@@ -163,11 +167,11 @@ export class CostCenterModalComponent implements OnInit {
           const { _id, name } = this.itemForm.value;
           const cost = new CostCenter(_id!, name!);
           this.ccService.update(cost).subscribe({
-            next: (res) => {
+            next: (_) => {
               this.closeModatEmitter.emit(this.item());
             },
-            error: (err) => {
-              console.log(err);
+            error: (res) => {
+              this.message_error.set(res.error.message);
             },
           });
           break;
@@ -175,11 +179,11 @@ export class CostCenterModalComponent implements OnInit {
           this.locationService
             .update(this.itemForm.value as CostLocation)
             .subscribe({
-              next: (res) => {
+              next: (_) => {
                 this.closeModatEmitter.emit(this.item());
               },
-              error: (err) => {
-                console.log(err);
+              error: (res) => {
+                this.message_error.set(res.error.message);
               },
             });
           break;
@@ -187,22 +191,22 @@ export class CostCenterModalComponent implements OnInit {
           this.departmentService
             .update(this.itemForm.value as Department)
             .subscribe({
-              next: (res) => {
+              next: (_) => {
                 this.closeModatEmitter.emit(this.item());
               },
-              error: (err) => {
-                console.log(err);
+              error: (res) => {
+                this.message_error.set(res.error.message);
               },
             });
 
           break;
         case CostOption.COMPANY:
           this.companyService.update(this.itemForm.value as Company).subscribe({
-            next: (res) => {
+            next: (_) => {
               this.closeModatEmitter.emit(this.item());
             },
-            error: (err) => {
-              console.log(err);
+            error: (res) => {
+              this.message_error.set(res.error.message);
             },
           });
       }

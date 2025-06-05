@@ -5,14 +5,11 @@ import { CostCenterTableComponent } from './cost-center-table/cost-center-table.
 import { CostCenter } from '../../models/const-center.model';
 import { CostCenterModalComponent } from './cost-center-modal/cost-center-modal.component';
 import { CostCenterService } from '../../services/cost-center.service';
-import { Company } from '../../models/company.model';
-import { CostLocation } from '../../models/cost-location.model';
-import { Department } from '../../models/department.model';
 import { CompanyService } from '../../services/company.service';
 import { CostDepartmentService } from '../../services/cost-department.service';
 import { CostLocationService } from '../../services/cost-location.service';
 import { CostOption } from '../../enums/cost-option.enum';
-import { JsonPipe } from '@angular/common';
+
 import { ICost } from '../../interfaces/cost.interface';
 
 @Component({

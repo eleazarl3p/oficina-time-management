@@ -5,6 +5,7 @@
     <thead class="bg-gray-300 text-black">
       <tr>
         <th class="px-3 py-2">FullName</th>
+        <th class="px-3 py-2">Username</th>
         <th class="px-3 py-2">Role</th>
       </tr>
     </thead>
@@ -16,6 +17,9 @@
       >
         <td class="text-center px-3 py-2 border-r-1 border-gray-300">
           {{ user.fullName }}
+        </td>
+        <td class="text-center px-3 py-2 border-r-1 border-gray-300">
+          {{ user.username }}
         </td>
         <td class="px-3 py-2 text-center">{{ user.role }}</td>
       </tr>

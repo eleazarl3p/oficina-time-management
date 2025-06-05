@@ -25,54 +25,19 @@
           formControlName="name"
           class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
         />
+        <span
+          *ngIf="itemForm.get('name')?.invalid && itemForm.get('name')?.touched"
+          class="text-sm text-red-600"
+        >
+          This field is required
+        </span>
+
+        <span
+          *ngIf="message_error() != null"
+          class="block text-sm text-red-600 mt-4"
+          >{{ message_error() }}</span
+        >
       </div>
-
-      <!-- <div>
-        <label class="block text-sm font-medium text-gray-700" for="clocation"
-          >Location</label
-        >
-        <input
-          type="text"
-          id="clocation"
-          formControlName="location"
-          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
-        />
-      </div> -->
-
-      <!-- <div>
-        <label class="block text-sm font-medium text-gray-700" for="cdepartment"
-          >Department</label
-        >
-        <input
-          type="text"
-          id="cdepartment"
-          formControlName="department"
-          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
-        />
-      </div>
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="ccompany"
-          >Company Code</label
-        >
-        <input
-          type="text"
-          id="ccompany"
-          formControlName="company_code"
-          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
-        />
-      </div> -->
-
-      <!-- <div>
-        <label class="block text-sm font-medium text-gray-700" for="cjob"
-          >Jom</label
-        >
-        <input
-          type="text"
-          id="jname"
-          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
-        />
-      </div> -->
 
       <!-- Buttons -->
       <div class="flex justify-between pt-4">

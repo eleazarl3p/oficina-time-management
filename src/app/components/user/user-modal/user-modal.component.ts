@@ -5,24 +5,25 @@ import {
   input,
   OnInit,
   Output,
-} from "@angular/core";
-import { User } from "../../../models/user.model";
+  signal,
+} from '@angular/core';
+import { User } from '../../../models/user.model';
 import {
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
-} from "@angular/forms";
-import { NgIf } from "@angular/common";
-import { LoginService } from "../../../services/login.service";
-import { UserService } from "../../../services/user.service";
+} from '@angular/forms';
+import { NgIf } from '@angular/common';
+import { LoginService } from '../../../services/login.service';
+import { UserService } from '../../../services/user.service';
 
 @Component({
-  selector: "app-user-modal",
+  selector: 'app-user-modal',
   imports: [FormsModule, ReactiveFormsModule, NgIf],
-  templateUrl: "./user-modal.component.html",
-  styleUrl: "./user-modal.component.css",
+  templateUrl: './user-modal.component.html',
+  styleUrl: './user-modal.component.css',
 })
 export class UserModalComponent implements OnInit {
   loginService = inject(LoginService);
@@ -32,14 +33,16 @@ export class UserModalComponent implements OnInit {
   fb = inject(FormBuilder);
   @Output() close = new EventEmitter<void>();
 
+  message_error = signal<string | null>(null);
+
   userForm: FormGroup = this.fb.group({
     _id: 0,
-    first_name: ["", Validators.required],
-    last_name: ["", Validators.required],
-    username: ["", Validators.required],
-    password: ["", Validators.required],
+    first_name: ['', Validators.required],
+    last_name: ['', Validators.required],
+    username: ['', Validators.required],
+    // password: ['', Validators.required],
     // password: ["", Validators.required],
-    role: ["", Validators.required],
+    role: ['', Validators.required],
   });
 
   closeModal() {
@@ -53,7 +56,7 @@ export class UserModalComponent implements OnInit {
       first_name: this.user().first_name,
       last_name: this.user().last_name,
       username: this.user().username,
-      password: this.user().password,
+      // password: this.user().password,
       role: this.user().role,
     });
   }
@@ -63,21 +66,41 @@ export class UserModalComponent implements OnInit {
   }
 
   delete(id: number) {
-    this.userService.delete(id).subscribe((res) => {
-      this.closeModal();
+    this.userService.delete(id).subscribe({
+      next: (_) => {
+        this.closeModal();
+      },
+      error: (res) => {
+        this.message_error.set(res.error.message);
+      },
     });
   }
 
   submit() {
+    if (this.userForm.invalid) {
+      this.userForm.markAllAsTouched();
+      return;
+    }
+
     const user = Object.assign(new User(), this.userForm.value);
 
     if (user._id == 0) {
-      this.userService.create(user).subscribe((res) => {
-        this.closeModal();
+      this.userService.create(user).subscribe({
+        next: (_) => {
+          this.closeModal();
+        },
+        error: (res) => {
+          this.message_error.set(res.error.message);
+        },
       });
     } else {
-      this.userService.update(user).subscribe((res) => {
-        this.closeModal();
+      this.userService.update(user).subscribe({
+        next: (_) => {
+          this.closeModal();
+        },
+        error: (res) => {
+          this.message_error.set(res.error.message);
+        },
       });
     }
   }

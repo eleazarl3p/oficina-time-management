@@ -27,6 +27,16 @@
           formControlName="first_name"
           class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1"
         />
+
+        <span
+          *ngIf="
+            userForm.get('first_name')?.invalid &&
+            userForm.get('first_name')?.touched
+          "
+          class="text-sm text-red-600"
+        >
+          First Name is required
+        </span>
       </div>
 
       <div>
@@ -39,6 +49,16 @@
           formControlName="last_name"
           class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1"
         />
+
+        <span
+          *ngIf="
+            userForm.get('last_name')?.invalid &&
+            userForm.get('last_name')?.touched
+          "
+          class="text-sm text-red-600"
+        >
+          Last Name is required
+        </span>
       </div>
 
       <div>
@@ -51,28 +71,15 @@
           formControlName="username"
           class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1"
         />
-      </div>
-
-      <!-- <div>
-        <label class="block text-sm font-medium text-gray-700">Password</label>
-        <input
-          type="password"
-          id="secret"
-          formControlName="password1"
-          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm p-2"
-        />
-      </div> -->
-
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="password"
-          >Password</label
+        <span
+          *ngIf="
+            userForm.get('username')?.invalid &&
+            userForm.get('username')?.touched
+          "
+          class="text-sm text-red-600"
         >
-        <input
-          type="password"
-          id="password"
-          formControlName="password"
-          class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1"
-        />
+          Username is required
+        </span>
       </div>
 
       <div>
@@ -89,6 +96,9 @@
         </select>
       </div>
 
+      <span class="text-sm text-red-500">
+        {{ message_error() }}
+      </span>
       <!-- Buttons -->
       <div class="flex justify-between pt-4">
         <button
@@ -104,6 +114,7 @@
           type="button"
           (click)="resetPassword(user()._id)"
           class="px-4 py-2 text-sm text-white bg-yellow-500 rounded hover:bg-yellow-400 cursor-pointer"
+          *ngIf="user()._id > 0 && loginService.user()!.isAdmin"
         >
           Reset Password
         </button>

@@ -30,6 +30,15 @@
           formControlName="date"
           class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
         />
+        <span
+          *ngIf="
+            taskForm.get('date')?.hasError('required') &&
+            taskForm.get('date')?.touched
+          "
+          class="text-sm text-red-600"
+        >
+          Date is required.
+        </span>
       </div>
 
       <div class="grid grid-cols-2 gap-4">
@@ -67,7 +76,7 @@
         </select>
       </div>
 
-      <div *ngIf="taskForm.value.pay_type === 'WORK'">
+      <div *ngIf="taskForm.get('pay_type')?.value === 'WORK'">
         <label class="block text-sm font-medium text-gray-700">Project</label>
         <select
           formControlName="job"
@@ -77,9 +86,16 @@
             {{ job.name }}
           </option>
         </select>
+
+        <span
+          *ngIf="taskForm.get('job')?.invalid && taskForm.get('job')?.touched"
+          class="text-sm text-red-600"
+        >
+          Job is required.
+        </span>
       </div>
 
-      <div *ngIf="taskForm.value.pay_type === 'WORK'">
+      <div *ngIf="taskForm.get('pay_type')?.value === 'WORK'">
         <label class="block text-sm font-medium text-gray-700">Item #</label>
         <select
           formControlName="item"
@@ -89,10 +105,16 @@
             {{ item }}
           </option>
         </select>
+        <span
+          *ngIf="taskForm.get('item')?.invalid && taskForm.get('item')?.touched"
+          class="text-sm text-red-600"
+        >
+          Item is required
+        </span>
       </div>
 
       <div
-        *ngIf="taskForm.value.pay_type === 'WORK'"
+        *ngIf="taskForm.get('pay_type')?.value === 'WORK'"
         class="grid grid-cols-2 gap-4"
       >
         <div>
@@ -107,6 +129,15 @@
               {{ cc.code }}
             </option>
           </select>
+          <span
+            *ngIf="
+              taskForm.get('cost_center')?.invalid &&
+              taskForm.get('cost_center')?.touched
+            "
+            class="text-sm text-red-600"
+          >
+            Cost Center is required
+          </span>
         </div>
 
         <div>
@@ -121,6 +152,16 @@
               {{ cc.name }}
             </option>
           </select>
+
+          <span
+            *ngIf="
+              taskForm.get('lacation')?.invalid &&
+              taskForm.get('location')?.touched
+            "
+            class="text-sm text-red-600"
+          >
+            Location is required
+          </span>
         </div>
       </div>
 
@@ -140,6 +181,15 @@
               {{ cc.name }}
             </option>
           </select>
+          <span
+            *ngIf="
+              taskForm.get('department')?.invalid &&
+              taskForm.get('department')?.touched
+            "
+            class="text-sm text-red-600"
+          >
+            Departement is required
+          </span>
         </div>
 
         <div>
@@ -152,6 +202,16 @@
               {{ cc.name }}
             </option>
           </select>
+
+          <span
+            *ngIf="
+              taskForm.get('company')?.invalid &&
+              taskForm.get('company')?.touched
+            "
+            class="text-sm text-red-600"
+          >
+            Company is required
+          </span>
         </div>
       </div>
 
@@ -213,10 +273,16 @@
           </button>
           <button
             type="submit"
-            class="px-4 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-700 cursor-pointer"
+            class="px-4 py-2 text-sm rounded"
             *ngIf="
               task()._id == 0 || task().pending || loginService.user()?.isAdmin
             "
+            [ngClass]="{
+              'text-white bg-green-600 hover:bg-green-700 cursor-pointer':
+                taskForm.valid,
+              'text-gray-600 bg-gray-200  hover:bg-gray-200 cursor-auto':
+                taskForm.invalid
+            }"
           >
             {{ task()._id > 0 ? "Update" : "Add" }}
           </button>

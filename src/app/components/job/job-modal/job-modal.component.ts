@@ -7,37 +7,39 @@ import {
   OnInit,
   Output,
   signal,
-} from "@angular/core";
-import { Job } from "../../../models/job.model";
+} from '@angular/core';
+import { Job } from '../../../models/job.model';
 import {
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
-} from "@angular/forms";
-import { CommonModule, NgFor } from "@angular/common";
-import { JobService } from "../../../services/job.service";
+} from '@angular/forms';
+import { CommonModule, NgFor } from '@angular/common';
+import { JobService } from '../../../services/job.service';
 
 @Component({
-  selector: "app-job-modal",
+  selector: 'app-job-modal',
   imports: [FormsModule, ReactiveFormsModule, NgFor, CommonModule],
-  templateUrl: "./job-modal.component.html",
-  styleUrl: "./job-modal.component.css",
+  templateUrl: './job-modal.component.html',
+  styleUrl: './job-modal.component.css',
 })
 export class JobModalComponent implements OnInit {
   jobService = inject(JobService);
   job = input.required<Job>();
   items = signal<string[]>([]);
 
+  message_error = signal<string | null>(null);
+
   @Output() closeModatEmitter = new EventEmitter<void>();
 
-  newItem = signal<string>("");
+  newItem = signal<string>('');
   fb = new FormBuilder();
 
   jobForm = this.fb.group({
     _id: [0, Validators.required],
-    name: ["", Validators.required],
+    name: ['', Validators.required],
     items: this.fb.control(null as string[] | null, Validators.required),
   });
 
@@ -53,13 +55,17 @@ export class JobModalComponent implements OnInit {
   }
 
   addItem() {
-    const trimmed = this.newItem().trim();
-    if (trimmed.length > 0) {
-      const updated = new Set([...this.items(), trimmed]);
+    const itms = this.newItem()
+      .split('/')
+      .map((itm) => itm.trim())
+      .filter((itm) => itm.length > 2);
+    //const trimmed = this.newItem().trim();
+    if (itms.length > 0) {
+      const updated = new Set([...this.items(), ...itms]);
       this.items.set([...updated]);
 
       // optional: reset the input field
-      this.newItem.set("");
+      this.newItem.set('');
       this.jobForm.patchValue({ items: this.items() });
     }
   }
@@ -68,19 +74,39 @@ export class JobModalComponent implements OnInit {
     this.closeModatEmitter.emit();
   }
   delete(id: number) {
-    this.jobService.delete(id).subscribe((res) => {
-      this.closeModatEmitter.emit();
+    this.jobService.delete(id).subscribe({
+      next: (_) => {
+        this.closeModatEmitter.emit();
+      },
+      error: (res) => {
+        this.message_error.set(res.error.message);
+      },
     });
   }
 
   onSubmit() {
+    if (this.jobForm.invalid) {
+      this.jobForm.markAllAsTouched();
+      return;
+    }
+
     if (this.job()._id == 0) {
-      this.jobService.create(this.jobForm.value as Job).subscribe((res) => {
-        this.closeModatEmitter.emit();
+      this.jobService.create(this.jobForm.value as Job).subscribe({
+        next: (_) => {
+          this.closeModatEmitter.emit();
+        },
+        error: (res) => {
+          this.message_error.set(res.error.message);
+        },
       });
     } else {
-      this.jobService.update(this.jobForm.value as Job).subscribe((res) => {
-        this.closeModatEmitter.emit();
+      this.jobService.update(this.jobForm.value as Job).subscribe({
+        next: (_) => {
+          this.closeModatEmitter.emit();
+        },
+        error: (res) => {
+          this.message_error.set(res.error.message);
+        },
       });
     }
   }

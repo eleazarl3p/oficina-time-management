@@ -18,15 +18,20 @@ export class SettingsComponent {
 
   password1 = signal<string>('');
   password2 = signal<string>('');
+  message_success = signal<string | null>('');
+  message_error = signal<string | null>('');
 
   updatePassword() {
-    debugger;
     if (this.password1() == this.password2()) {
       let user = Object.assign(new User(), this.loginService.user());
       user.password = this.password1();
-      this.userService.update(user).subscribe((res) => {
-        this.password1.set('');
-        this.password2.set('');
+      this.userService.updatePassword(user).subscribe({
+        next: (_) => {
+          this.message_success.set('Password updated');
+        },
+        error: (err) => {
+          this.message_error.set(err.error.message);
+        },
       });
     }
   }

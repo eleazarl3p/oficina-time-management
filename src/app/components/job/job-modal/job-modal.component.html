@@ -27,6 +27,16 @@
           formControlName="name"
           class="mt-1 w-full rounded border-gray-300 ring-1 shadow-sm px-2 py-1 placeholder-gray-300 placeholder:font-thin"
         />
+
+        <span
+          *ngIf="
+            jobForm.get('name')?.hasError('required') &&
+            jobForm.get('name')?.touched
+          "
+          class="text-sm text-red-600"
+        >
+          Name is required
+        </span>
       </div>
 
       <div>
@@ -60,7 +70,7 @@
           type="text"
           class="ring-1 w-full px-2 py-1 rounded placeholder-gray-300 placeholder:font-thin"
           name="itemn"
-          placeholder="Item name"
+          placeholder="Item1/item2/.../itemn"
           [(ngModel)]="newItem"
         />
         <button
@@ -71,6 +81,9 @@
         </button>
       </div>
     </div>
+    <span class="text-sm text-red-500">
+      {{ message_error() }}
+    </span>
     <hr class="my-4 border-gray-200" />
     <!-- Buttons -->
     <div class="flex justify-between pt-4">

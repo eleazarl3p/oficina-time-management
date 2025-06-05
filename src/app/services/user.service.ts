@@ -22,6 +22,12 @@ export class UserService {
     return this.http.patch(`${this.url}/${user._id}`, user);
   }
 
+  updatePassword(user: User) {
+    return this.http.patch(`${this.url}/${user._id}/password`, {
+      password: user.password,
+    });
+  }
+
   delete(id: number) {
     return this.http.delete(`${this.url}/${id}`);
   }
