@@ -1,62 +1,65 @@
-import { CommonModule, DatePipe } from "@angular/common";
+import { CommonModule, DatePipe } from '@angular/common';
 import {
   Component,
   computed,
   EventEmitter,
+  inject,
   input,
+  model,
   output,
   Output,
   signal,
-} from "@angular/core";
-import { FormsModule } from "@angular/forms";
+} from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { groupBy } from 'rxjs';
+import { LoginService } from '../../../services/login.service';
 
 @Component({
-  selector: "app-date-filter",
+  selector: 'app-date-filter',
   imports: [FormsModule, CommonModule],
-  templateUrl: "./date-filter.component.html",
-  styleUrl: "./date-filter.component.css",
+  templateUrl: './date-filter.component.html',
+  styleUrl: './date-filter.component.css',
 })
 export class DateFilterComponent {
+  loginService = inject(LoginService);
   @Output() exportAsPdf = new EventEmitter<void>();
   @Output() exportAsCsv = new EventEmitter<void>();
 
-  @Output() dateRangeChanged = new EventEmitter<{
-    fromDate: string;
-    toDate: string;
-  }>();
+  fromDateO = model<string>();
+  toDateO = model<string>();
 
   tasksLength = input.required<number>();
 
-  fromDate = signal<string>("");
-  toDate = signal<string>("");
+  private fromDate_ = signal<string>('');
+  private toDate_ = signal<string>('');
 
   maxStartDate = computed(() => {
-    const to = new Date(this.toDate());
-    to.setDate(to.getDate());
-    return to.toLocaleDateString("sv-SE");
+    if (this.toDateO() && this.toDateO()!.length > 2) {
+      return new Date(this.toDateO()!).toISOString().split('T')[0];
+    }
+
+    const day = new Date();
+    const d = day.getDate();
+    day.setDate(d - 1);
+    return day.toLocaleDateString('sv-SE');
   });
 
   minToDate = computed(() => {
-    const from = new Date(this.fromDate());
-    from.setDate(from.getDate() + 1);
-    return from.toLocaleDateString("sv-SE");
+    if (this.fromDateO() && this.fromDateO()!.length > 2) {
+      const from = new Date(`${this.fromDateO()}T00:00:00`);
+
+      return from.toISOString().split('T')[0];
+    }
+    const day = new Date();
+    const d = day.getDate();
+    day.setDate(d - 1);
+    return day.toLocaleDateString('sv-SE');
   });
 
   ngOnInit(): void {
-    const today = new Date();
-
-    const sevenDaysAgo = new Date();
-
-    sevenDaysAgo.setDate(today.getDate() - 7);
-
-    this.toDate.set(today.toLocaleDateString("sv-SE")); // Format YYYY-MM-DD
-    this.fromDate.set(sevenDaysAgo.toLocaleDateString("sv-SE"));
-  }
-
-  dateFilter() {
-    this.dateRangeChanged.emit({
-      fromDate: this.fromDate(),
-      toDate: this.toDate(),
-    });
+    const today = new Date(this.toDateO()!);
+    const monday = new Date(this.fromDateO()!);
+    this.toDate_.set(this.toDateO()!);
+    this.fromDate_.set(this.fromDateO()!);
   }
 }

@@ -6,6 +6,7 @@ import {
   WritableSignal,
   signal,
   inject,
+  effect,
 } from '@angular/core';
 import { SidePanelComponent } from '../dashboard/side-panel/side-panel.component';
 import { UserTaskTableComponent } from './user-task-table/user-task-table.component';
@@ -16,7 +17,7 @@ import { AllTaskTableComponent } from './all-task-table/all-task-table.component
 import { DateFilterComponent } from './date-filter/date-filter.component';
 import { CommonModule, TitleCasePipe } from '@angular/common';
 import { SummarizedTableComponent } from './summarized-table/summarized-table.component';
-import { ISummarizedTask } from '../../models/summarized-task.interface';
+import { ISummarizedTask } from '../../interfaces/summarized-task.interface';
 
 // import { saveAs } from 'file-saver';
 import { saveAs } from 'file-saver-es';
@@ -64,8 +65,7 @@ export class TaskViewComponent implements OnInit {
   selectedJobs: WritableSignal<Job[]> = signal<Job[]>([]);
   selectedUsers: WritableSignal<User[]> = signal<User[]>([]);
   selectedStatus: WritableSignal<string[]> = signal<string[]>([]);
-  fromDate = signal<string>('');
-  toDate = signal<string>('');
+
   mode = signal<'itemized' | 'summarize'>('itemized');
 
   loginService = inject(LoginService);
@@ -75,11 +75,82 @@ export class TaskViewComponent implements OnInit {
   jobs = signal<Job[]>([]);
   users = signal<User[]>([]);
 
+  fromDateO = signal<string>('');
+  toDateO = signal<string>('');
+
   hideFilters = signal<boolean>(true);
   isModalOpen = false;
 
   selectedTask = signal<Task | null>(null);
 
+  totalWorkHours = computed(() => {
+    if (this.loginService.user()?.isAdmin) {
+      const wt = this.allTasks().filter((t) => t.pay_type == 'WORK');
+
+      const tot = wt.reduce((acc, tsk) => acc + tsk.elapseTime(), 0).toFixed(2);
+      if (Number(tot) == 0) {
+        return '--';
+      } else {
+        return tot;
+      }
+    } else {
+      const wt = this.userTasks().filter((t) => t.pay_type == 'WORK');
+
+      const tot = wt.reduce((acc, tsk) => acc + tsk.elapseTime(), 0).toFixed(2);
+
+      if (Number(tot) == 0) {
+        return '--';
+      } else {
+        return tot;
+      }
+    }
+  });
+
+  totalLunchHours = computed(() => {
+    if (this.loginService.user()?.isAdmin) {
+      const wt = this.allTasks().filter((t) => t.pay_type == 'LUNCH');
+
+      const tot = wt.reduce((acc, tsk) => acc + tsk.elapseTime(), 0).toFixed(2);
+      if (Number(tot) == 0) {
+        return '--';
+      } else {
+        return tot;
+      }
+    } else {
+      const wt = this.userTasks().filter((t) => t.pay_type == 'LUNCH');
+
+      const tot = wt.reduce((acc, tsk) => acc + tsk.elapseTime(), 0).toFixed(2);
+      if (Number(tot) == 0) {
+        return '--';
+      } else {
+        return tot;
+      }
+    }
+  });
+
+  totalVacationHours = computed(() => {
+    if (this.loginService.user()?.isAdmin) {
+      const wt = this.allTasks().filter((t) => t.pay_type == 'VACATION');
+
+      const tot = wt.reduce((acc, tsk) => acc + tsk.elapseTime(), 0).toFixed(2);
+
+      if (Number(tot) == 0) {
+        return '--';
+      } else {
+        return tot;
+      }
+    } else {
+      const wt = this.userTasks().filter((t) => t.pay_type == 'VACATION');
+
+      const tot = wt.reduce((acc, tsk) => acc + tsk.elapseTime(), 0).toFixed(2);
+
+      if (Number(tot) == 0) {
+        return '--';
+      } else {
+        return tot;
+      }
+    }
+  });
   summarizedTasks = computed(() => {
     if (this.loginService.user()!.isAdmin) {
       let tasks: ISummarizedTask[] = [];
@@ -90,7 +161,9 @@ export class TaskViewComponent implements OnInit {
         const tp = {
           _id: job._id,
           job: job.name,
-          hours: tsk.reduce((acc, tsk) => acc + tsk.elapseTime(), 0),
+          hours: Number(
+            tsk.reduce((acc, tsk) => acc + tsk.elapseTime(), 0).toFixed(2)
+          ),
         };
 
         tasks.push(tp as ISummarizedTask);
@@ -106,7 +179,9 @@ export class TaskViewComponent implements OnInit {
         tasks.push({
           _id: job._id,
           job: job.name,
-          hours: tsk.reduce((acc, tsk) => acc + tsk.elapseTime(), 0),
+          hours: Number(
+            tsk.reduce((acc, tsk) => acc + tsk.elapseTime(), 0).toFixed(2)
+          ),
         } as ISummarizedTask);
       }
       return tasks.filter((t) => t.hours > 0);
@@ -124,7 +199,30 @@ export class TaskViewComponent implements OnInit {
     return this.summarizedTasks().length;
   });
 
+  constructor() {
+    // Valid injection context
+    effect(() => {
+      const from = this.fromDateO();
+      const to = this.toDateO();
+      if (from && to) {
+        this.filterTasks(from, to);
+      }
+    });
+  }
   ngOnInit(): void {
+    const today = new Date();
+
+    const dayOfWeek = today.getDay();
+
+    const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + diffToMonday);
+
+    this.toDateO.set(today.toISOString().split('T')[0]);
+    // this.toDateO.set(today.toLocaleDateString('sv-SE'));
+    this.fromDateO.set(monday.toISOString().split('T')[0]);
+
     this.getTasks();
   }
 
@@ -195,11 +293,11 @@ export class TaskViewComponent implements OnInit {
     }
   }
 
-  filterRangeDate(event: { fromDate: string; toDate: string }) {
-    this.fromDate.set(event.fromDate);
-    this.toDate.set(event.toDate);
-    this.filterTasks(event.fromDate, event.toDate);
-  }
+  // filterRangeDate(event: { fromDate: string; toDate: string }) {
+  //   this.fromDate.set(event.fromDate);
+  //   this.toDate.set(event.toDate);
+  //   this.filterTasks(event.fromDate, event.toDate);
+  // }
 
   formatDate(date: string | Date): string {
     return new Date(date).toLocaleDateString('en-US', {
@@ -268,15 +366,14 @@ export class TaskViewComponent implements OnInit {
                 t.company ? new Company(t.company._id, t.company.name) : null
               )
           );
-          console.log(this.tasksList);
 
-          const today = new Date();
+          // const today = new Date();
 
-          const sevenDaysAgo = new Date();
-          sevenDaysAgo.setDate(today.getDate() - 7);
+          // const sevenDaysAgo = new Date();
+          // sevenDaysAgo.setDate(today.getDate() - 7);
 
-          this.fromDate.set(sevenDaysAgo.toISOString().split('T')[0]);
-          this.toDate.set(today.toISOString().split('T')[0]);
+          // this.fromDate.set(sevenDaysAgo.toISOString().split('T')[0]);
+          // this.toDate.set(today.toISOString().split('T')[0]);
 
           const uniqueUsers = Array.from(
             new Map(this.tasksList.map((t) => [t.user._id, t.user])).values()
@@ -304,7 +401,7 @@ export class TaskViewComponent implements OnInit {
           );
           this.jobs.set(uniqueJobs);
 
-          this.filterTasks(this.fromDate(), this.toDate());
+          this.filterTasks(this.fromDateO(), this.toDateO());
         },
         error: (err: HttpErrorResponse) => {
           if (err.status == 401) {
@@ -342,7 +439,8 @@ export class TaskViewComponent implements OnInit {
     let csvContent = '';
 
     if (this.mode() == 'itemized') {
-      csvContent = 'User, Date, Pay Type, Hour, Project, Status\n';
+      csvContent =
+        'User, Date, Pay Type,Time In, Time Out, Total Hours, Location,Company,  Project, Item #, Cost Code, Status\n';
       let tasks = [];
       if (this.loginService.user()!.isAdmin) {
         tasks = this.allTasks();
@@ -354,8 +452,16 @@ export class TaskViewComponent implements OnInit {
           task.user.fullName,
           `"${this.formatDate(task.date)}"`,
           task.pay_type,
+
+          task.timeIn,
+          task.timeOut,
           task.elapseTime(),
-          `"${task.job?.name}"`,
+          `"${task.location?.name ?? ''}"`,
+          `"${task.company?.name ?? ''}"`,
+          `"${task.job?.name ?? ''}"`,
+          `"${task.item ?? ''}"`,
+          `"${task.cost_center?.code ?? ''}"`,
+
           task.status,
         ].join(',');
         csvContent += row + '\n';
@@ -412,13 +518,38 @@ export class TaskViewComponent implements OnInit {
   }
 
   createTask() {
-    // Provide default or empty values for all required Task constructor arguments
+    let lastTask: Task | undefined = undefined;
+
+    if (this.loginService.user()?.isAdmin) {
+      lastTask = this.getTodayTasksSortedByEndTime(this.allTasks()).pop();
+    } else {
+      lastTask = this.getTodayTasksSortedByEndTime(this.userTasks()).pop();
+    }
+
+    const currentDate = new Date();
+    let start = '08:00';
+    let end = `${currentDate
+      .getHours()
+      .toString()
+      .padStart(2, '0')}:${currentDate.getMinutes()}`;
+
+    if (lastTask) {
+      const lastEnd = new Date(lastTask.end_time);
+      const nextStart = new Date(lastEnd);
+      const nextEnd = new Date(lastEnd);
+      nextEnd.setHours(nextEnd.getHours() + 4);
+      nextEnd.setMinutes(0);
+
+      start = nextStart.toTimeString().slice(0, 5);
+      // end = nextEnd.toTimeString().slice(0, 5);
+    }
+
     const task = new Task(
       0, // _id
       'WORK', // pay_type
       this.getTodayDate(), // date
-      this.getCurrentTime(), // start_time
-      this.getCurrentTime(10), // end_time
+      start, // start_time
+      end, // end_time
       null, // notes
       'pending', // status
       null, // code
@@ -433,7 +564,7 @@ export class TaskViewComponent implements OnInit {
   setMode(value: 'itemized' | 'summarize') {
     this.mode.set(value);
     // You can also re-filter if mode affects output
-    this.filterTasks(this.fromDate(), this.toDate());
+    this.filterTasks(this.fromDateO(), this.toDateO());
   }
 
   toggleSelection<T>(signalArray: WritableSignal<T[]>, value: T) {
@@ -444,12 +575,12 @@ export class TaskViewComponent implements OnInit {
       signalArray.set([...current, value]);
     }
 
-    this.filterTasks(this.fromDate(), this.toDate());
+    this.filterTasks(this.fromDateO(), this.toDateO());
   }
 
   getTodayDate(): string {
     const today = new Date();
-    return today.toLocaleDateString('sv-SE');
+    //return today.toLocaleDateString('sv-SE');
     return today.toISOString().split('T')[0]; // 'YYYY-MM-DD'
   }
 
@@ -457,5 +588,20 @@ export class TaskViewComponent implements OnInit {
     this.taskService.review(event.id, event.approve).subscribe((res) => {
       this.getTasks();
     });
+  }
+
+  getTodayTasksSortedByEndTime(tasks: Task[]): Task[] {
+    const todayStr = new Date().toISOString().slice(0, 10); // 'YYYY-MM-DD'
+
+    return tasks
+      .filter(
+        (task) =>
+          task.date.slice(0, 10) === todayStr &&
+          task.user._id == this.loginService.user()?._id
+      )
+      .sort(
+        (a, b) =>
+          new Date(a.end_time).getTime() - new Date(b.end_time).getTime()
+      );
   }
 }

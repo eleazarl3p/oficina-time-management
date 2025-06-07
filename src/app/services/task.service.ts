@@ -46,3 +46,15 @@ export class TaskService {
     );
   }
 }
+
+// checkOverlap(newTask: Task, existingTasks: Task[]): boolean {
+//   const newStart = new Date(newTask.start_time).getTime();
+//   const newEnd = new Date(newTask.end_time).getTime();
+
+//   return existingTasks.some(task => {
+//     if (task._id === newTask._id || task.date !== newTask.date) return false;
+//     const start = new Date(task.start_time).getTime();
+//     const end = new Date(task.end_time).getTime();
+//     return newStart < end && newEnd > start;
+//   });
+// }

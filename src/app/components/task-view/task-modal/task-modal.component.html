@@ -43,9 +43,7 @@
 
       <div class="grid grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700"
-            >Start Time</label
-          >
+          <label class="block text-sm font-medium text-gray-700">Time In</label>
           <input
             type="time"
             formControlName="start_time"
@@ -54,7 +52,7 @@
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700"
-            >End Time</label
+            >Time Out</label
           >
           <input
             type="time"
@@ -250,6 +248,10 @@
           <option value="pending">Pending</option>
         </select>
       </div>
+
+      <span class="text-sm text-red-500">
+        {{ message_error() }}
+      </span>
       <!-- Buttons -->
       <div class="flex justify-between pt-4">
         <button

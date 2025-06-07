@@ -8,14 +8,19 @@ export class PdfExportService {
     head,
     body,
     filename = 'report.pdf',
+    totalWork,
+    totalLunch,
   }: {
     title: string;
     dateRange: string;
     head: string[][];
     body: RowInput[];
     filename?: string;
+    totalWork: string;
+    totalLunch: string;
   }) {
-    const doc = new jsPDF();
+    const doc = new jsPDF({ orientation: 'landscape' });
+
     const pageWidth = doc.internal.pageSize.getWidth();
     const pageHeight = doc.internal.pageSize.getHeight();
 
@@ -28,7 +33,7 @@ export class PdfExportService {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.text(`(${dateRange})`, pageWidth / 2, 22, { align: 'center' });
-
+    let finalY = 28;
     autoTable(doc, {
       startY: 28,
       head,
@@ -51,12 +56,20 @@ export class PdfExportService {
       tableLineColor: [209, 213, 219],
       tableLineWidth: 0.2,
       didDrawPage: (data) => {
+        if (data.cursor) {
+          finalY = data.cursor.y;
+        }
         const pageNumber = doc.getNumberOfPages();
         doc.setFontSize(8);
         doc.text(`Page ${pageNumber}`, pageWidth - 15, pageHeight - 10);
       },
     });
 
+    doc.setFontSize(10);
+    doc.text(`Total Work Hours: ${totalWork}`, 14, finalY + 10);
+    if (Number(totalLunch) > 0) {
+      doc.text(`Total Lunch Hours: ${totalLunch}`, 70, finalY + 10);
+    }
     doc.save(filename);
   }
 

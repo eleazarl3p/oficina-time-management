@@ -8,20 +8,20 @@ import {
   Output,
   signal,
   ViewChild,
-} from "@angular/core";
-import { Task } from "../../../models/task.model";
-import { DatePipe, TitleCasePipe } from "@angular/common";
-import { DateFilterComponent } from "../date-filter/date-filter.component";
+} from '@angular/core';
+import { Task } from '../../../models/task.model';
+import { DatePipe, TitleCasePipe } from '@angular/common';
+import { DateFilterComponent } from '../date-filter/date-filter.component';
 
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
-import { PdfExportService } from "../../../services/pdf-export.service";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import { PdfExportService } from '../../../services/pdf-export.service';
 
 @Component({
-  selector: "app-user-task-table",
+  selector: 'app-user-task-table',
   imports: [DatePipe, TitleCasePipe],
-  templateUrl: "./user-task-table.component.html",
-  styleUrl: "./user-task-table.component.css",
+  templateUrl: './user-task-table.component.html',
+  styleUrl: './user-task-table.component.css',
 })
 export class UserTaskTableComponent {
   fromDate = input.required<string>();
@@ -34,14 +34,14 @@ export class UserTaskTableComponent {
   exportPdf() {
     const head = [
       [
-        "Date",
-        "Pay Type",
-        "Start Time",
-        "End Time",
-        "Hours",
-        "Cost Center",
-        "Project",
-        "Approved",
+        'Date',
+        'Pay Type',
+        'Start Time',
+        'End Time',
+        'Hours',
+        'Cost Center',
+        'Project',
+        'Approved',
       ],
     ];
     const body = this.tasks().map((task) => [
@@ -50,17 +50,19 @@ export class UserTaskTableComponent {
       PdfExportService.formatTime(task.start_time),
       PdfExportService.formatTime(task.end_time),
       task.elapseTime(),
-      PdfExportService.toTitleCase(task.cost_center?.code || ""),
-      PdfExportService.toTitleCase(task.job?.name || ""),
+      PdfExportService.toTitleCase(task.cost_center?.code || ''),
+      PdfExportService.toTitleCase(task.job?.name || ''),
       PdfExportService.toTitleCase(task.status),
     ]);
 
     PdfExportService.exportTable({
-      title: "TIMESHEET",
+      title: 'TIMESHEET',
       dateRange: `${this.fromDate()} - ${this.toDate()}`,
       head,
       body,
-      filename: "timesheet.pdf",
+      filename: 'timesheet.pdf',
+      totalWork: '--',
+      totalLunch: '--',
     });
   }
 }

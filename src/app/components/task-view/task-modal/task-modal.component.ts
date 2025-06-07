@@ -58,6 +58,8 @@ export class TaskModalComponent implements OnInit {
   costDepartments = signal<Department[]>([]);
   costCompanies = signal<Company[]>([]);
 
+  message_error = signal<string>('');
+
   @Output() close = new EventEmitter<boolean>();
   taskForm: FormGroup = new FormGroup({});
 
@@ -227,12 +229,22 @@ export class TaskModalComponent implements OnInit {
     };
 
     if (raw._id > 0) {
-      this.taskService.updateTask(raw._id, payload).subscribe((res) => {
-        this.closeModal();
+      this.taskService.updateTask(raw._id, payload).subscribe({
+        next: (_) => {
+          this.closeModal();
+        },
+        error: (res) => {
+          this.message_error.set(res.error.message);
+        },
       });
     } else {
-      this.taskService.createTasks(payload).subscribe((res) => {
-        this.closeModal();
+      this.taskService.createTasks(payload).subscribe({
+        next: (_) => {
+          this.closeModal();
+        },
+        error: (res) => {
+          this.message_error.set(res.error.message);
+        },
       });
     }
   }

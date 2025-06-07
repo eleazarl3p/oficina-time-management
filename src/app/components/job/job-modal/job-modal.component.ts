@@ -58,7 +58,7 @@ export class JobModalComponent implements OnInit {
     const itms = this.newItem()
       .split('/')
       .map((itm) => itm.trim())
-      .filter((itm) => itm.length > 2);
+      .filter((itm) => itm.length > 1);
     //const trimmed = this.newItem().trim();
     if (itms.length > 0) {
       const updated = new Set([...this.items(), ...itms]);

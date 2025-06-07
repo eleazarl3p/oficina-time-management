@@ -72,6 +72,7 @@
           name="itemn"
           placeholder="Item1/item2/.../itemn"
           [(ngModel)]="newItem"
+          (keydown.enter)="addItem()"
         />
         <button
           class="px-3 py-1 rounded text-amber-50 bg-green-600 hover:bg-green-500 cursor-pointer active:scale-95"

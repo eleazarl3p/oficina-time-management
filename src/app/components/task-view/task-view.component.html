@@ -114,20 +114,39 @@
 
   <!-- Right content -->
   <div class="p-4 pr-0 flex-1 flex flex-col">
+    <!-- (dateRangeChanged)="filterRangeDate($event)" -->
     <app-date-filter
-      (dateRangeChanged)="filterRangeDate($event)"
       (exportAsPdf)="handlePdfExport()"
       (exportAsCsv)="handleCsvExport()"
       [tasksLength]="tasksLength()"
+      [(fromDateO)]="fromDateO"
+      [(toDateO)]="toDateO"
       class="mb-3"
     ></app-date-filter>
 
+    <div
+      class="flex gap-5 shadow-md bg-gray-100 border border-gray-300 px-4 py-2 mb-2 text-gray-600"
+    >
+      <div class="flex gap-1">
+        <h2>Total Work Hours :</h2>
+        <p>{{ totalWorkHours() }}</p>
+      </div>
+      <div class="flex gap-1">
+        <h2>Total Lunch Hours :</h2>
+        <p>{{ totalLunchHours() }}</p>
+      </div>
+
+      <div class="flex gap-1">
+        <h2>Total Vacation Hours :</h2>
+        <p>{{ totalVacationHours() }}</p>
+      </div>
+    </div>
     <div *ngIf="mode() === 'itemized'; else summarizedMode">
       <div *ngIf="!this.loginService.user()!.isAdmin; else adminTable">
         <app-user-task-table
           #userTaskTable
-          [fromDate]="fromDate()"
-          [toDate]="toDate()"
+          [fromDate]="fromDateO()"
+          [toDate]="toDateO()"
           [tasks]="userTasks()"
           (editTask)="editTask($event)"
           (newTask)="createTask()"
@@ -138,9 +157,11 @@
         <div>
           <app-all-task-table
             #allTaskTable
-            [fromDate]="fromDate()"
-            [toDate]="toDate()"
+            [fromDate]="fromDateO()"
+            [toDate]="toDateO()"
             [tasks]="allTasks()"
+            [totalWork]="totalWorkHours()"
+            [totalLunch]="totalLunchHours()"
             (editTask)="editTask($event)"
             (newTask)="createTask()"
             (reviewTask)="reviewTask($event)"
@@ -151,8 +172,8 @@
     <ng-template #summarizedMode>
       <app-summarized-table
         #summarizedTaskTable
-        [fromDate]="fromDate()"
-        [toDate]="toDate()"
+        [fromDate]="fromDateO()"
+        [toDate]="toDateO()"
         [tasks]="summarizedTasks()"
       ></app-summarized-table>
     </ng-template>
