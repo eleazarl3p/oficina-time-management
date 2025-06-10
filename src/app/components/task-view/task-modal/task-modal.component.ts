@@ -100,44 +100,6 @@ export class TaskModalComponent implements OnInit {
 
     const task = this.task();
 
-    // this.taskForm = this.fb.group({
-    //   _id: [task._id],
-    //   pay_type: [task.pay_type, Validators.required],
-
-    //   date: [task.date, Validators.required],
-    //   start_time: [task.start_time, Validators.required],
-    //   end_time: [task.end_time, Validators.required],
-    //   notes: [task.notes ?? ''],
-    //   status: [task.status, Validators.required],
-    //   cost_center: [task.cost_center?._id ?? null],
-    //   job: [task.job?._id ?? null], // store job._id
-    //   item: [task.item ?? null],
-    //   user: [task.user?._id ?? null, Validators.required], // store user._id
-    //   location: [task.location?._id ?? null, Validators.required],
-    //   department: [task.department?._id ?? null, Validators.required],
-    //   company: [task.company?._id ?? null, Validators.required],
-    // });
-
-    // this.taskForm = this.fb.group({
-    //   _id: [task._id],
-    //   pay_type: [task.pay_type, Validators.required],
-
-    //   date: [task.date, Validators.required],
-    //   start_time: [task.start_time, Validators.required],
-    //   end_time: [task.end_time, Validators.required],
-    //   notes: [task.notes ?? '', [Validators.maxLength(255)]],
-    //   status: [task.status, Validators.required],
-
-    //   cost_center: [task.cost_center?._id ?? null, Validators.required],
-    //   job: [task.job?._id ?? null], // only required if pay_type is 'WORK'
-    //   item: [task.item ?? null], // only required if pay_type is 'WORK'
-
-    //   user: [task.user?._id ?? null, Validators.required],
-    //   location: [task.location?._id ?? null, Validators.required],
-    //   department: [task.department?._id ?? null, Validators.required],
-    //   company: [task.company?._id ?? null, Validators.required],
-    // });
-
     this.taskForm = this.fb.group({
       _id: [task._id],
       pay_type: [task.pay_type, Validators.required],
@@ -225,7 +187,7 @@ export class TaskModalComponent implements OnInit {
       department: raw.pay_type == 'WORK' ? parseInt(raw.department, 10) : null,
       company: raw.pay_type == 'WORK' ? parseInt(raw.company, 10) : null,
       notes: raw.notes,
-      status: raw.status,
+      status: this.loginService.user()?.isAdmin ? raw.status : 'pending',
     };
 
     if (raw._id > 0) {
@@ -264,6 +226,7 @@ export class TaskModalComponent implements OnInit {
 
         if (jb) {
           this.items.set(jb.items);
+          this.taskForm.get('item')?.setValue(this.task().item);
         }
       }
     });
@@ -273,6 +236,11 @@ export class TaskModalComponent implements OnInit {
     this.ccService.getCCs().subscribe((res) => {
       const ccs = res.map((cc) => Object.assign(new CostCenter(), cc));
       this.costCenters.set(ccs);
+
+      const costCenterControl = this.taskForm.get('cost_center');
+      if (!costCenterControl?.value && ccs.length) {
+        costCenterControl?.setValue(ccs[0]._id);
+      }
     });
   }
 
@@ -280,7 +248,11 @@ export class TaskModalComponent implements OnInit {
     this.locationService.get().subscribe((res) => {
       const lct = res.map((l) => Object.assign(new CostLocation(), l));
 
+      const locationControl = this.taskForm.get('location');
       this.costLocations.set(lct);
+      if (!locationControl?.value && lct.length) {
+        locationControl?.setValue(lct[0]._id);
+      }
     });
   }
 
@@ -289,6 +261,11 @@ export class TaskModalComponent implements OnInit {
       const dpts = res.map((d) => Object.assign(new Department(), d));
 
       this.costDepartments.set(dpts);
+
+      const departmentControl = this.taskForm.get('department');
+      if (!departmentControl?.value && dpts.length) {
+        departmentControl?.setValue(dpts[0]._id);
+      }
     });
   }
 
@@ -297,6 +274,11 @@ export class TaskModalComponent implements OnInit {
       const cmps = res.map((c) => Object.assign(new Company(), c));
 
       this.costCompanies.set(cmps);
+
+      const companyControl = this.taskForm.get('company');
+      if (!companyControl?.value && cmps.length) {
+        companyControl?.setValue(cmps[0]._id); // or use .at(0)
+      }
     });
   }
 }

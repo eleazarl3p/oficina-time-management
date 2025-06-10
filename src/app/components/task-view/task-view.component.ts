@@ -200,11 +200,21 @@ export class TaskViewComponent implements OnInit {
   });
 
   constructor() {
-    // Valid injection context
+    let hasFromChangedAfterInit = false;
+
     effect(() => {
       const from = this.fromDateO();
+      if (hasFromChangedAfterInit) {
+        this.toDateO.set('');
+      } else {
+        hasFromChangedAfterInit = true;
+      }
+    });
+
+    effect(() => {
       const to = this.toDateO();
-      if (from && to) {
+      if (to !== '') {
+        const from = this.fromDateO();
         this.filterTasks(from, to);
       }
     });
@@ -367,17 +377,13 @@ export class TaskViewComponent implements OnInit {
               )
           );
 
-          // const today = new Date();
-
-          // const sevenDaysAgo = new Date();
-          // sevenDaysAgo.setDate(today.getDate() - 7);
-
-          // this.fromDate.set(sevenDaysAgo.toISOString().split('T')[0]);
-          // this.toDate.set(today.toISOString().split('T')[0]);
+          const prevSelectedUsers = this.selectedUsers();
+          const prevSelectedJobs = this.selectedJobs();
 
           const uniqueUsers = Array.from(
             new Map(this.tasksList.map((t) => [t.user._id, t.user])).values()
           );
+
           this.users.set(
             uniqueUsers.map(
               (u: any) =>
@@ -399,7 +405,18 @@ export class TaskViewComponent implements OnInit {
                 .map((t) => [t.job!._id, t.job!])
             ).values()
           );
+
           this.jobs.set(uniqueJobs);
+
+          const updatedUserSelections = this.users().filter((u) =>
+            prevSelectedUsers.some((sel) => sel._id === u._id)
+          );
+          this.selectedUsers.set(updatedUserSelections);
+
+          const updatedJobSelections = this.jobs().filter((j) =>
+            prevSelectedJobs.some((sel) => sel._id === j._id)
+          );
+          this.selectedJobs.set(updatedJobSelections);
 
           this.filterTasks(this.fromDateO(), this.toDateO());
         },
@@ -409,30 +426,6 @@ export class TaskViewComponent implements OnInit {
           }
         },
       });
-    // .subscribe((res: any[]) => {
-    //   this.tasksList = res.map(
-    //     (t) =>
-    //       new Task(
-    //         t._id,
-    //         t.pay_type,
-    //         t.date,
-    //         t.start_time,
-    //         t.end_time,
-    //         t.notes ?? null,
-    //         t.status ?? "pending",
-    //         t.code ?? null,
-
-    //         t.job ? new Job(t.job._id, t.job.name, t.job.items) : null,
-    //         new User(
-    //           t.user._id,
-    //           t.user.first_name,
-    //           t.user.last_name,
-    //           t.user.username,
-    //           t.user.password,
-    //           t.user.role
-    //         ) // properly instantiate User with all required arguments
-    //       )
-    //   );
   }
 
   handleCsvExport() {

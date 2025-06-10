@@ -277,7 +277,10 @@
             type="submit"
             class="px-4 py-2 text-sm rounded"
             *ngIf="
-              task()._id == 0 || task().pending || loginService.user()?.isAdmin
+              task()._id == 0 ||
+              task().pending ||
+              loginService.user()?.isAdmin ||
+              task().denied
             "
             [ngClass]="{
               'text-white bg-green-600 hover:bg-green-700 cursor-pointer':
