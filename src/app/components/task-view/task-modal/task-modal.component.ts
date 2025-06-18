@@ -10,11 +10,14 @@ import {
   signal,
 } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { Task } from '../../../models/task.model';
@@ -100,22 +103,25 @@ export class TaskModalComponent implements OnInit {
 
     const task = this.task();
 
-    this.taskForm = this.fb.group({
-      _id: [task._id],
-      pay_type: [task.pay_type, Validators.required],
-      date: [task.date, Validators.required],
-      start_time: [task.start_time, Validators.required],
-      end_time: [task.end_time, Validators.required],
-      notes: [task.notes ?? '', [Validators.maxLength(255)]],
-      status: [task.status, Validators.required],
-      cost_center: [task.cost_center?._id ?? null],
-      job: [task.job?._id ?? null],
-      item: [task.item ?? null],
-      user: [task.user?._id ?? null, Validators.required],
-      location: [task.location?._id ?? null],
-      department: [task.department?._id ?? null],
-      company: [task.company?._id ?? null],
-    });
+    this.taskForm = this.fb.group(
+      {
+        _id: [task._id],
+        pay_type: [task.pay_type, Validators.required],
+        date: [task.date, Validators.required],
+        start_time: [task.start_time, Validators.required],
+        end_time: [task.end_time, Validators.required],
+        notes: [task.notes ?? '', [Validators.maxLength(255)]],
+        status: [task.status, Validators.required],
+        cost_center: [task.cost_center?._id ?? null],
+        job: [task.job?._id ?? null],
+        item: [task.item ?? null],
+        user: [task.user?._id ?? null, Validators.required],
+        location: [task.location?._id ?? null],
+        department: [task.department?._id ?? null],
+        company: [task.company?._id ?? null],
+      },
+      { validators: timeRangeValidator }
+    );
 
     this.taskForm.get('job')?.valueChanges.subscribe((jobId: string) => {
       const job = this.jobs().find((j) => j._id === Number(jobId));
@@ -282,3 +288,14 @@ export class TaskModalComponent implements OnInit {
     });
   }
 }
+
+export const timeRangeValidator: ValidatorFn = (
+  group: AbstractControl
+): ValidationErrors | null => {
+  const start = group.get('start_time')?.value;
+  const end = group.get('end_time')?.value;
+
+  if (!start || !end) return null;
+
+  return start >= end ? { outOfRange: true } : null;
+};

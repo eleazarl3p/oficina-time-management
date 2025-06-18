@@ -49,16 +49,28 @@
             formControlName="start_time"
             class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
           />
+          <div
+            class="text-sm text-red-500 mt-1"
+            *ngIf="taskForm.errors?.['outOfRange']"
+          >
+            <strong>Time In</strong> must be earlier than
+            <strong>Time Out</strong>.
+          </div>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700"
-            >Time Out</label
-          >
+          <label class="block text-sm text-gray-700">Time Out</label>
           <input
             type="time"
             formControlName="end_time"
             class="mt-1 w-full rounded border-gray-300 shadow-sm p-2"
           />
+          <div
+            class="text-red-500 text-sm mt-1"
+            *ngIf="taskForm.errors?.['outOfRange']"
+          >
+            <strong>Time Out</strong> must be later than
+            <strong>Time In</strong>.
+          </div>
         </div>
       </div>
 
